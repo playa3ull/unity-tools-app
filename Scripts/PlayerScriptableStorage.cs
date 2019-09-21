@@ -12,8 +12,8 @@
 	/// 
 	/// <remarks>
 	/// When there is not file in disk, this creates a runtime clone of the provided
-	/// <see cref="m_ScriptableObject"/> and modifies the clone in order to preserve the 
-	/// <see cref="m_ScriptableObject"/> with its values. If there is a file in disk, 
+	/// <see cref="m_DefaultScriptableObject"/> and modifies the clone in order to preserve the 
+	/// <see cref="m_DefaultScriptableObject"/> with its values. If there is a file in disk, 
 	/// it creates a scriptable object with that data.
 	/// </remarks>
 	public class PlayerScriptableStorage : MonoBehaviour {
@@ -38,30 +38,50 @@
 		#region Public Methods
 
 		public ScriptableObject GetPlayerScriptableObject() {
+
+			if(m_DefaultScriptableObject == null) {
+				throw new InvalidOperationException(
+					string.Format("{0} can not be null", nameof(m_DefaultScriptableObject))
+				);
+			}
+
 			// Try to load it first
 			if (m_PlayerScriptableObject == null) {
-				Load(m_ScriptableObject.GetType());
+				Load(m_DefaultScriptableObject.GetType());
 			}
 			// If file doesn't exist, then create a clone of the default scriptable object.
 			if (m_PlayerScriptableObject == null) {
-				m_PlayerScriptableObject = Instantiate(m_ScriptableObject);
+				m_PlayerScriptableObject = Instantiate(m_DefaultScriptableObject);
 			}
 			return m_PlayerScriptableObject;
 		}
 
 		public T GetPlayerScriptableObject<T>() where T: ScriptableObject {
+
+			if (m_DefaultScriptableObject == null) {
+				throw new InvalidOperationException(
+					string.Format("{0} can not be null", nameof(m_DefaultScriptableObject))
+				);
+			}
+
 			// Try to load it first
 			if (m_PlayerScriptableObject == null) {
 				Load<T>();
 			} 
 			// If file doesn't exist, then create a clone of the default scriptable object.
 			if (m_PlayerScriptableObject == null) {
-				m_PlayerScriptableObject = Instantiate(m_ScriptableObject);
+				m_PlayerScriptableObject = Instantiate(m_DefaultScriptableObject);
 			}
 			return m_PlayerScriptableObject as T;
 		}
 
-		public void Save<T>() where T : ScriptableObject {
+		public void Save() {
+
+			if (m_DefaultScriptableObject == null) {
+				throw new InvalidOperationException(
+					string.Format("{0} can not be null", nameof(m_DefaultScriptableObject))
+				);
+			}
 
 			// Allow the developer to type the path separated with "/"
 			string[] pathSteps = FilePath.Split('/');
@@ -76,7 +96,7 @@
 			Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
 
 			// Save the data
-			string scriptableDataJSON = JsonUtility.ToJson(GetPlayerScriptableObject<T>(), true);
+			string scriptableDataJSON = JsonUtility.ToJson(GetPlayerScriptableObject(), true);
 			File.WriteAllText(fullPath, scriptableDataJSON);
 
 		}
@@ -100,7 +120,7 @@
 		#region Private Fields
 
 		[SerializeField]
-		private ScriptableObject m_ScriptableObject;
+		private ScriptableObject m_DefaultScriptableObject;
 
 		[SerializeField]
 		private ScriptableObject m_PlayerScriptableObject;
@@ -111,7 +131,7 @@
 		#region Private Properties
 
 		private string PlayerScriptableObjectName { 
-			get { return string.Format("{0} (From file)", m_ScriptableObject.name); } 
+			get { return string.Format("{0} (From file)", m_DefaultScriptableObject.name); } 
 		}
 
 		#endregion

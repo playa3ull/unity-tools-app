@@ -14,6 +14,9 @@
 		[SerializeField]
 		public string SomeField;
 
+		[SerializeField]
+		public List<ExampleScriptableObject> SubScriptableObjects;
+
 		#endregion
 
 

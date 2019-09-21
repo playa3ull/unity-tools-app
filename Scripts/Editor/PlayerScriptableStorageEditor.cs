@@ -12,17 +12,38 @@
 
 		#region Unity Methods
 
+		private void OnEnable() {
+			EditorApplication.playModeStateChanged += EditorApplication_PlayModeStateChanged;
+		}
+
+		private void OnDisable() {
+			EditorApplication.playModeStateChanged -= EditorApplication_PlayModeStateChanged;
+		}
+
 		public override void OnInspectorGUI() {
 			serializedObject.Update();
 			DrawScript();
 			EditorGUILayout.PropertyField(FilePathProperty); 
-			EditorGUILayout.PropertyField(ScriptableObjectProperty);
+			EditorGUILayout.PropertyField(DefaultScriptableObjectProperty);
 			DrawScriptableObjectHelpBox();
 			DrawPlayerScriptableObject();
 			DrawFileHelpBox();
 			DrawDelete();
 			serializedObject.ApplyModifiedProperties();
 			Repaint();
+		}
+
+		#endregion
+
+
+		#region Event Handlers
+
+		private void EditorApplication_PlayModeStateChanged(PlayModeStateChange obj) {
+			if(obj == PlayModeStateChange.ExitingEditMode) {
+				serializedObject.Update();
+				PlayerScriptableObjectProperty.objectReferenceValue = null;
+				serializedObject.ApplyModifiedProperties();
+			}
 		}
 
 		#endregion
@@ -36,7 +57,7 @@
 
 		private SerializedProperty m_FilePathProperty;
 
-		private SerializedProperty m_ScriptableObjectProperty;
+		private SerializedProperty m_DefaultScriptableObjectProperty;
 
 		private SerializedProperty m_PlayerScriptableObjectProperty;
 
@@ -62,8 +83,8 @@
 			get { return m_FilePathProperty = m_FilePathProperty ?? serializedObject.FindProperty("FilePath"); }
 		}
 
-		private SerializedProperty ScriptableObjectProperty {
-			get { return m_ScriptableObjectProperty = m_ScriptableObjectProperty ?? serializedObject.FindProperty("m_ScriptableObject"); }
+		private SerializedProperty DefaultScriptableObjectProperty {
+			get { return m_DefaultScriptableObjectProperty = m_DefaultScriptableObjectProperty ?? serializedObject.FindProperty("m_DefaultScriptableObject"); }
 		}
 
 		private SerializedProperty PlayerScriptableObjectProperty {
@@ -88,7 +109,7 @@
 		}
 
 		private void DrawScriptableObjectHelpBox() {
-			if(ScriptableObjectProperty.objectReferenceValue == null) {
+			if(DefaultScriptableObjectProperty.objectReferenceValue == null) {
 				EditorGUILayout.HelpBox("A ScriptableObject must be assigned.", MessageType.Error);
 			}
 		}
@@ -122,8 +143,8 @@
 						"Confirm Delete Player Scriptable Object File",
 						string.Format(
 							"Are you sure you want to delete the player file of {0}?",
-							ScriptableObjectProperty.objectReferenceValue != null ?
-							string.Format("\"{0}\"", ScriptableObjectProperty.objectReferenceValue.name) :
+							DefaultScriptableObjectProperty.objectReferenceValue != null ?
+							string.Format("\"{0}\"", DefaultScriptableObjectProperty.objectReferenceValue.name) :
 							"a missing ScriptableObject"
 						),
 						"Delete",

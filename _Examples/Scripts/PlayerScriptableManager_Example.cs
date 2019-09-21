@@ -33,7 +33,7 @@
 		#region Event Handlers
 
 		private void SaveButton_onClick() {
-			PlayerScriptableManager.Save<ExampleScriptableObject>();
+			PlayerScriptableManager.Save();
 		}
 
 		private void DeleteButton_onClick() {
