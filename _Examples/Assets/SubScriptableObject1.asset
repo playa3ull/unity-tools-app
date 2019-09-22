@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9f7b49247fa84824b4f69d2e9307139, type: 3}
   m_Name: SubScriptableObject1
   m_EditorClassIdentifier: 
-  SomeField: Default Value
-  SubScriptableObjects: []
+  m_ClassName: CocodriloDog.App.ExampleScriptableObject
+  SomeField: Subobject1
+  SomeFields: []
+  SubScriptableObject: {fileID: 0}
+  SubScriptableObjectsArray: []
+  SubScriptableObjectsList: []

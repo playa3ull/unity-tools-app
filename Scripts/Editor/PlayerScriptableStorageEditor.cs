@@ -133,7 +133,8 @@
 			{
 				EditorGUI.BeginDisabledGroup(!PlayerScriptableStorage.FileExists);
 				if (GUILayout.Button("Load")) {
-					PlayerScriptableStorage.GetPlayerScriptableObject();
+					// Make the internal field to be assigned by invoking the getter.
+					ScriptableObject playerScriptableObject = PlayerScriptableStorage.PlayerScriptableObject;
 				}
 				if (GUILayout.Button("Unload")) {
 					PlayerScriptableObjectProperty.objectReferenceValue = null;
