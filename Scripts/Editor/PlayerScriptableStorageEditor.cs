@@ -28,7 +28,7 @@
 			DrawScriptableObjectHelpBox();
 			DrawPlayerScriptableObject();
 			DrawFileHelpBox();
-			DrawDelete();
+			DrawButtons();
 			serializedObject.ApplyModifiedProperties();
 			Repaint();
 		}
@@ -128,16 +128,20 @@
 			}
 		}
 
-		private void DrawDelete() {
+		private void DrawButtons() {
 			GUILayout.BeginHorizontal();
 			{
 				EditorGUI.BeginDisabledGroup(!PlayerScriptableStorage.FileExists);
-				if (GUILayout.Button("Load")) {
-					// Make the internal field to be assigned by invoking the getter.
-					ScriptableObject playerScriptableObject = PlayerScriptableStorage.PlayerScriptableObject;
+				if (PlayerScriptableObjectProperty.objectReferenceValue == null) {
+					if (GUILayout.Button("Load")) {
+						// Make the internal field to be assigned by invoking the getter.
+						ScriptableObject playerScriptableObject = PlayerScriptableStorage.PlayerScriptableObject;
+					}
 				}
-				if (GUILayout.Button("Unload")) {
-					PlayerScriptableObjectProperty.objectReferenceValue = null;
+				if (PlayerScriptableObjectProperty.objectReferenceValue != null) {
+					if (GUILayout.Button("Unload")) {
+						PlayerScriptableObjectProperty.objectReferenceValue = null;
+					}
 				}
 				if (GUILayout.Button("Delete")) {
 					if (EditorUtility.DisplayDialog(

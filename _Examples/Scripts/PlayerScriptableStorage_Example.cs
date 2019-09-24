@@ -5,8 +5,15 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
+	using System;
 
 	public class PlayerScriptableStorage_Example : MonoBehaviour {
+
+
+		[Header("References")]
+
+		[SerializeField]
+		public PlayerScriptableStorage PlayerScriptableStorage;
 
 
 		#region Unity Methods
@@ -14,8 +21,13 @@
 		private void OnEnable() {
 			InputField.onEndEdit.AddListener(InputField_onEndEdit);
 			AddObjectButton.onClick.AddListener(AddObjectButton_onClick);
+			RemoveObjectButton.onClick.AddListener(RemoveObjectButton_onClick);
 			SaveButton.onClick.AddListener(SaveButton_onClick);
 			DeleteButton.onClick.AddListener(DeleteButton_onClick);
+		}
+
+		private void Start() {
+			AddAllSubobjectTexts();
 		}
 
 		private void Update() {
@@ -25,6 +37,7 @@
 		private void OnDisable() {
 			InputField.onEndEdit.AddListener(InputField_onEndEdit);
 			AddObjectButton.onClick.RemoveListener(AddObjectButton_onClick);
+			RemoveObjectButton.onClick.RemoveListener(RemoveObjectButton_onClick);
 			SaveButton.onClick.RemoveListener(SaveButton_onClick);
 			DeleteButton.onClick.RemoveListener(DeleteButton_onClick);
 		}
@@ -40,16 +53,29 @@
 
 		private void AddObjectButton_onClick() {
 			ExampleScriptableObject1 subobject = new ExampleScriptableObject1();
-			subobject.SomeField = "Subobject 3";
+			subobject.SomeField = string.Format(
+				"Subobject {0}", 
+				PlayerScriptableObject.SubScriptableObjectsList.Count
+			);
 			PlayerScriptableObject.SubScriptableObjectsList.Add(subobject);
+			AddSubobjectText(subobject);
+		}
+
+		private void RemoveObjectButton_onClick() {
+			PlayerScriptableObject.SubScriptableObjectsList.RemoveAt(
+				PlayerScriptableObject.SubScriptableObjectsList.Count - 1
+			);
+			RemoveSubobjectText();
 		}
 
 		private void SaveButton_onClick() {
-			PlayerScriptableManager.Save();
+			PlayerScriptableStorage.Save();
 		}
 
 		private void DeleteButton_onClick() {
-			PlayerScriptableManager.Delete();
+			RemoveAllSubobjectTexts();
+			PlayerScriptableStorage.Delete();
+			StartCoroutine(AddAllSubobjectTextsAfterFrame());
 		}
 
 		#endregion
@@ -60,13 +86,19 @@
 		[Header("Subcomponents")]
 
 		[SerializeField]
-		private Text m_Text;
-
-		[SerializeField]
 		private InputField m_InputField;
 
 		[SerializeField]
+		private Text m_Text;
+
+		[SerializeField]
 		private Button m_AddObjectButton;
+
+		[SerializeField]
+		private Button m_RemoveObjectButton;
+
+		[SerializeField]
+		private RectTransform m_SubobjectTexts;
 
 		[SerializeField]
 		private Button m_SaveButton;
@@ -79,8 +111,6 @@
 
 		#region Private Fields - Non Serialized
 
-		private PlayerScriptableStorage m_PlayerScriptableStorage;
-
 		private ExampleScriptableObject1 m_PlayerScriptableObject;
 
 		#endregion
@@ -88,32 +118,67 @@
 
 		#region Private Properties
 
-		private Text Text { get { return m_Text; } }
-
 		private InputField InputField { get { return m_InputField; } }
 
+		private Text Text { get { return m_Text; } }
+
 		private Button AddObjectButton { get { return m_AddObjectButton; } }
+
+		private Button RemoveObjectButton { get { return m_RemoveObjectButton; } }
+
+		private RectTransform SubobjectTexts { get { return m_SubobjectTexts; } }
 
 		private Button SaveButton { get { return m_SaveButton; } }
 
 		private Button DeleteButton { get { return m_DeleteButton; } }
 
-		private PlayerScriptableStorage PlayerScriptableManager {
-			get {
-				if(m_PlayerScriptableStorage == null) {
-					m_PlayerScriptableStorage = GetComponent<PlayerScriptableStorage>();
-				}
-				return m_PlayerScriptableStorage;
-			}
-		}
-
 		private ExampleScriptableObject1 PlayerScriptableObject {
 			get {
 				if (m_PlayerScriptableObject == null) {
-					m_PlayerScriptableObject = PlayerScriptableManager.GetPlayerScriptableObject<ExampleScriptableObject1>();
+					m_PlayerScriptableObject = PlayerScriptableStorage.GetPlayerScriptableObject<ExampleScriptableObject1>();
 				}
 				return m_PlayerScriptableObject;
 			}
+		}
+
+		#endregion
+
+
+		#region Private Methods
+
+		private void AddAllSubobjectTexts() {
+			foreach (ExampleScriptableObject1 subobject in PlayerScriptableObject.SubScriptableObjectsList) {
+				AddSubobjectText(subobject);
+			}
+		}
+
+		IEnumerator AddAllSubobjectTextsAfterFrame() {
+			yield return null;
+			AddAllSubobjectTexts();
+		}
+
+		private void RemoveAllSubobjectTexts() {
+			foreach(Transform tr in SubobjectTexts) {
+				Destroy(tr.gameObject);
+			}
+			SubobjectTexts.sizeDelta -= Vector2.up * SubobjectTexts.sizeDelta.y;
+		}
+
+		private void AddSubobjectText(ExampleScriptableObject1 subobject) {
+
+			Text text = Instantiate(Text);
+			text.text = subobject.SomeField;
+			text.rectTransform.SetParent(SubobjectTexts);
+			text.rectTransform.localScale = Vector3.one;
+
+			SubobjectTexts.sizeDelta += Vector2.up * text.rectTransform.sizeDelta.y;
+
+		}
+
+		private void RemoveSubobjectText() {
+			RectTransform text = (RectTransform)SubobjectTexts.GetChild(SubobjectTexts.childCount - 1);
+			Destroy(text.gameObject);
+			SubobjectTexts.sizeDelta -= Vector2.up * text.sizeDelta.y;
 		}
 
 		#endregion

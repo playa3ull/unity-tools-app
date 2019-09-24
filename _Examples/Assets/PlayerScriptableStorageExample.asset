@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44a612d50d17a4be28aad47615506d3b, type: 3}
+  m_Name: PlayerScriptableStorageExample
+  m_EditorClassIdentifier: 
+  FilePath: Folder/Subfolder/File.json
+  m_DefaultScriptableObject: {fileID: 11400000, guid: ed5564a2d993b4efa9baaa9608b1d8b6,
+    type: 2}
+  m_PlayerScriptableObject: {fileID: 0}
