@@ -31,7 +31,7 @@
 		}
 
 		private void Update() {
-			Text.text = string.Format("SomeProperty: {0}", PlayerScriptableObject.SomeField);
+			Text.text = string.Format("SomeField: {0}", PlayerScriptableObject.SomeField);
 		}
 
 		private void OnDisable() {
@@ -52,7 +52,7 @@
 		}
 
 		private void AddObjectButton_onClick() {
-			ExampleScriptableObject1 subobject = new ExampleScriptableObject1();
+			ExampleScriptableObject subobject = new ExampleScriptableObject();
 			subobject.SomeField = string.Format(
 				"Subobject {0}", 
 				PlayerScriptableObject.SubScriptableObjectsList.Count
@@ -111,7 +111,7 @@
 
 		#region Private Fields - Non Serialized
 
-		private ExampleScriptableObject1 m_PlayerScriptableObject;
+		private ExampleScriptableObject m_PlayerScriptableObject;
 
 		#endregion
 
@@ -132,10 +132,10 @@
 
 		private Button DeleteButton { get { return m_DeleteButton; } }
 
-		private ExampleScriptableObject1 PlayerScriptableObject {
+		private ExampleScriptableObject PlayerScriptableObject {
 			get {
 				if (m_PlayerScriptableObject == null) {
-					m_PlayerScriptableObject = PlayerScriptableStorage.GetPlayerScriptableObject<ExampleScriptableObject1>();
+					m_PlayerScriptableObject = PlayerScriptableStorage.GetPlayerScriptableObject<ExampleScriptableObject>();
 				}
 				return m_PlayerScriptableObject;
 			}
@@ -147,7 +147,7 @@
 		#region Private Methods
 
 		private void AddAllSubobjectTexts() {
-			foreach (ExampleScriptableObject1 subobject in PlayerScriptableObject.SubScriptableObjectsList) {
+			foreach (ExampleScriptableObject subobject in PlayerScriptableObject.SubScriptableObjectsList) {
 				AddSubobjectText(subobject);
 			}
 		}
@@ -164,7 +164,7 @@
 			SubobjectTexts.sizeDelta -= Vector2.up * SubobjectTexts.sizeDelta.y;
 		}
 
-		private void AddSubobjectText(ExampleScriptableObject1 subobject) {
+		private void AddSubobjectText(ExampleScriptableObject subobject) {
 
 			Text text = Instantiate(Text);
 			text.text = subobject.SomeField;

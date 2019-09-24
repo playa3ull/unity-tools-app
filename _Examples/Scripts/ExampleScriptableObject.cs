@@ -5,14 +5,14 @@
 	using System.IO;
 	using UnityEngine;
 
-	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Examples/Example Scriptable Object 2")]
-	public class ExampleScriptableObject2 : ScriptableObject {
+	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Examples/Example Scriptable Object")]
+	public class ExampleScriptableObject : ScriptableObjectBase {
 
 
 		#region Public Fields
 
 		[SerializeField]
-		public float OtherField;
+		public string SomeField;
 
 		#endregion
 

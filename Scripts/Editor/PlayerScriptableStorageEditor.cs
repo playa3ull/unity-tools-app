@@ -26,8 +26,8 @@
 			EditorGUILayout.PropertyField(FilePathProperty); 
 			EditorGUILayout.PropertyField(DefaultScriptableObjectProperty);
 			DrawScriptableObjectHelpBox();
-			DrawPlayerScriptableObject();
 			DrawFileHelpBox();
+			DrawPlayerScriptableObject();
 			DrawButtons();
 			serializedObject.ApplyModifiedProperties();
 			Repaint();
