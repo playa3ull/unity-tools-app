@@ -146,14 +146,14 @@
 			Load(typeof(T));
 		}
 
-		private void Load(Type typ) {
+		private void Load(Type type) {
 
 			if (File.Exists(CrossPlatformFilePath)) {
 
 				string jsonString = File.ReadAllText(CrossPlatformFilePath);
 
 				JSON json = JSON.ParseString(jsonString);
-				m_PlayerScriptableObject = (ScriptableObject)json.zDeserialize(typ, null);
+				m_PlayerScriptableObject = (ScriptableObject)json.zDeserialize(type, null);
 
 			}
 		}
@@ -172,6 +172,10 @@
 			// Save the data
 			JSON json = JSON.Serialize(playerScriptableObject);
 			File.WriteAllText(path, json.CreatePrettyString());
+
+			// Save the data
+			//string json = JsonUtility.ToJson(playerScriptableObject, true);
+			//File.WriteAllText(path, json);
 
 		}
 

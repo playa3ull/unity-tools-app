@@ -1,11 +1,11 @@
 ﻿namespace CocodriloDog.App.Examples {
 
-	using System.IO;
+	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.IO;
 	using UnityEngine;
 	using UnityEngine.UI;
-	using System;
 
 	public class PlayerScriptableStorage_Example : MonoBehaviour {
 
@@ -24,6 +24,7 @@
 			RemoveObjectButton.onClick.AddListener(RemoveObjectButton_onClick);
 			SaveButton.onClick.AddListener(SaveButton_onClick);
 			DeleteButton.onClick.AddListener(DeleteButton_onClick);
+			PlayAudioButton.onClick.AddListener(PlayAudioButton_onClick);
 		}
 
 		private void Start() {
@@ -40,6 +41,7 @@
 			RemoveObjectButton.onClick.RemoveListener(RemoveObjectButton_onClick);
 			SaveButton.onClick.RemoveListener(SaveButton_onClick);
 			DeleteButton.onClick.RemoveListener(DeleteButton_onClick);
+			PlayAudioButton.onClick.RemoveListener(PlayAudioButton_onClick);
 		}
 
 		#endregion
@@ -78,6 +80,10 @@
 			StartCoroutine(AddAllSubobjectTextsAfterFrame());
 		}
 
+		private void PlayAudioButton_onClick() {
+			AudioSource.PlayOneShot(PlayerScriptableObject.AudioClip);
+		}
+
 		#endregion
 
 
@@ -106,12 +112,19 @@
 		[SerializeField]
 		private Button m_DeleteButton;
 
+		[SerializeField]
+		private Button m_PlayAudioButton;
+
 		#endregion
 
 
 		#region Private Fields - Non Serialized
 
+		[NonSerialized]
 		private ExampleScriptableObject m_PlayerScriptableObject;
+
+		[NonSerialized]
+		private AudioSource m_AudioSource;
 
 		#endregion
 
@@ -132,12 +145,23 @@
 
 		private Button DeleteButton { get { return m_DeleteButton; } }
 
+		private Button PlayAudioButton { get { return m_PlayAudioButton; } }
+
 		private ExampleScriptableObject PlayerScriptableObject {
 			get {
 				if (m_PlayerScriptableObject == null) {
 					m_PlayerScriptableObject = PlayerScriptableStorage.GetPlayerScriptableObject<ExampleScriptableObject>();
 				}
 				return m_PlayerScriptableObject;
+			}
+		}
+
+		private AudioSource AudioSource {
+			get {
+				if(m_AudioSource == null) {
+					m_AudioSource = gameObject.AddComponent<AudioSource>();
+				}
+				return m_AudioSource;
 			}
 		}
 

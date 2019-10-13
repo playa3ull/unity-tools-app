@@ -6,10 +6,13 @@
 	using UnityEngine;
 
 	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Examples/Example Scriptable Object")]
-	public class ExampleScriptableObject : ScriptableObjectBase {
+	public class ExampleScriptableObject : ExampleScriptableObjectBase {
 
 
 		#region Public Fields
+
+		[SerializeField]
+		public AudioClip AudioClip;
 
 		[SerializeField]
 		public string SomeField;
