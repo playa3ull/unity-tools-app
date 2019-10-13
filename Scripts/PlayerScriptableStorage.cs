@@ -14,7 +14,7 @@
 	/// 
 	/// <remarks>
 	/// When there is not file in disk, this creates a runtime clone of the provided
-	/// <see cref="m_DefaultScriptableObject"/>. The clone can be modified at runtime
+	/// <see cref="DefaultScriptableObject"/>. The clone can be modified at runtime
 	/// and the changes can be saved in disk. If there is a file in disk, it creates 
 	/// a scriptable object with that data.
 	/// </remarks>
@@ -51,8 +51,12 @@
 
 				// Try to load it first
 				if (m_PlayerScriptableObject == null) {
-					Load(DefaultScriptableObject.GetType());
+					m_PlayerScriptableObject = Load(DefaultScriptableObject.GetType());
+					if (m_PlayerScriptableObject != null) {
+						m_PlayerScriptableObject.name = PlayerScriptableObjectName;
+					}
 				}
+
 				// If file doesn't exist, then create a clone of the default scriptable object.
 				if (m_PlayerScriptableObject == null) {
 					m_PlayerScriptableObject = Instantiate(DefaultScriptableObject);
@@ -61,37 +65,49 @@
 				return m_PlayerScriptableObject;
 
 			}
+			private set { m_PlayerScriptableObject = value; }
 		}
 
 		public T GetPlayerScriptableObject<T>() where T: ScriptableObject {
 
-			if (m_DefaultScriptableObject == null) {
+			if (DefaultScriptableObject == null) {
 				throw new InvalidOperationException(
-					string.Format("{0} can not be null", nameof(m_DefaultScriptableObject))
+					string.Format("{0} can not be null", nameof(DefaultScriptableObject))
 				);
 			}
 
 			// Try to load it first
 			if (m_PlayerScriptableObject == null) {
-				Load<T>();
+				m_PlayerScriptableObject = Load<T>();
+				if (m_PlayerScriptableObject != null) {
+					m_PlayerScriptableObject.name = PlayerScriptableObjectName;
+				}
 			} 
+
 			// If file doesn't exist, then create a clone of the default scriptable object.
 			if (m_PlayerScriptableObject == null) {
-				m_PlayerScriptableObject = Instantiate(m_DefaultScriptableObject);
+				m_PlayerScriptableObject = Instantiate(DefaultScriptableObject);
 			}
+
 			return m_PlayerScriptableObject as T;
+
 		}
 
 		public void Save() {
+			if (DefaultScriptableObject == null) {
+				throw new InvalidOperationException(
+					string.Format("{0} can not be null", nameof(DefaultScriptableObject))
+				);
+			}
 			Save(PlayerScriptableObject, CrossPlatformFilePath);
 		}
 
 		public void Delete() {
-			if (m_PlayerScriptableObject != null) {
+			if (PlayerScriptableObject != null) {
 				if(Application.isPlaying) {
-					Destroy(m_PlayerScriptableObject);
+					Destroy(PlayerScriptableObject);
 				}
-				m_PlayerScriptableObject = null;
+				PlayerScriptableObject = null;
 			}
 			string fullPath = Path.Combine(Application.persistentDataPath, FilePath);
 			if (File.Exists(fullPath)) {
@@ -145,7 +161,7 @@
 		}
 
 		private string PlayerScriptableObjectName { 
-			get { return string.Format("{0} (From file)", m_DefaultScriptableObject.name); } 
+			get { return string.Format("{0} (From file)", DefaultScriptableObject.name); } 
 		}
 
 		#endregion
@@ -153,25 +169,20 @@
 
 		#region Private Methods
 
-		private void Load<T>() where T : ScriptableObject {
-			Load(typeof(T));
+		private T Load<T>() where T : ScriptableObject {
+			return Load(typeof(T)) as T;
 		}
 
-		private void Load(Type type) {
+		private ScriptableObject Load(Type type) {
 			if (File.Exists(CrossPlatformFilePath)) {
 				string jsonString = File.ReadAllText(CrossPlatformFilePath);
 				JSON json = JSON.ParseString(jsonString);
-				m_PlayerScriptableObject = (ScriptableObject)json.Deserialize(type, AudioClipsGUID);
+				return (ScriptableObject)json.Deserialize(type, AudioClipsGUID);
 			}
+			return null;
 		}
 
 		private void Save(ScriptableObject playerScriptableObject, string path) {
-
-			if (m_DefaultScriptableObject == null) {
-				throw new InvalidOperationException(
-					string.Format("{0} can not be null", nameof(m_DefaultScriptableObject))
-				);
-			}
 
 			// Create the directory if it doesn't exists
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -179,10 +190,6 @@
 			// Save the data
 			JSON json = JSON.Serialize(playerScriptableObject, AudioClipsGUID);
 			File.WriteAllText(path, json.CreatePrettyString());
-
-			// Save the data
-			//string json = JsonUtility.ToJson(playerScriptableObject, true);
-			//File.WriteAllText(path, json);
 
 		}
 
