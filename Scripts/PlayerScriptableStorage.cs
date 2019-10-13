@@ -158,16 +158,10 @@
 		}
 
 		private void Load(Type type) {
-
 			if (File.Exists(CrossPlatformFilePath)) {
-
 				string jsonString = File.ReadAllText(CrossPlatformFilePath);
-
 				JSON json = JSON.ParseString(jsonString);
-
-				json.zDeserialize(type, null, AudioClipsGUID, out object obj);
-				m_PlayerScriptableObject = (ScriptableObject)obj;
-
+				m_PlayerScriptableObject = (ScriptableObject)json.Deserialize(type, AudioClipsGUID);
 			}
 		}
 
