@@ -13,9 +13,9 @@
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
 			if (property.isExpanded) {
-				return (EditorGUIUtility.singleLineHeight + 2) * 3;
+				return FieldHeight * 3;
 			} else {
-				return EditorGUIUtility.singleLineHeight + 2;
+				return FieldHeight;
 			}
 		}
 

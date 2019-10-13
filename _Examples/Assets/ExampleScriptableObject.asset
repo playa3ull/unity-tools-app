@@ -16,5 +16,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 882c8c473dc9649b39cfd7fae3617da7, type: 2}
   - {fileID: 11400000, guid: 35a26087e1edb41e293a52fd40d95897, type: 2}
   - {fileID: 11400000, guid: b646f345f58da40a0930e8dadbfd0745, type: 2}
-  AudioClip: {fileID: 8300000, guid: fe8d89cf5003c47a987b3539a7390b22, type: 3}
+  AudioClip: {fileID: 8300000, guid: dd4dbd9d3027e48189e12a64437297ef, type: 3}
   SomeField: Default Value

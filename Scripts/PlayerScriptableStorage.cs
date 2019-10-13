@@ -43,19 +43,19 @@
 		public ScriptableObject PlayerScriptableObject {
 			get {
 
-				if (m_DefaultScriptableObject == null) {
+				if (DefaultScriptableObject == null) {
 					throw new InvalidOperationException(
-						string.Format("{0} can not be null", nameof(m_DefaultScriptableObject))
+						string.Format("{0} can not be null", nameof(DefaultScriptableObject))
 					);
 				}
 
 				// Try to load it first
 				if (m_PlayerScriptableObject == null) {
-					Load(m_DefaultScriptableObject.GetType());
+					Load(DefaultScriptableObject.GetType());
 				}
 				// If file doesn't exist, then create a clone of the default scriptable object.
 				if (m_PlayerScriptableObject == null) {
-					m_PlayerScriptableObject = Instantiate(m_DefaultScriptableObject);
+					m_PlayerScriptableObject = Instantiate(DefaultScriptableObject);
 				}
 
 				return m_PlayerScriptableObject;
@@ -108,12 +108,23 @@
 		private ScriptableObject m_DefaultScriptableObject;
 
 		[SerializeField]
+		private AudioClipsGUID m_AudioClipsGUID;
+		
+		[SerializeField]
 		private ScriptableObject m_PlayerScriptableObject;
 
 		#endregion
 
 
 		#region Private Properties
+
+		private ScriptableObject DefaultScriptableObject {
+			get { return m_DefaultScriptableObject; }
+		}
+
+		private AudioClipsGUID AudioClipsGUID {
+			get { return m_AudioClipsGUID; }
+		}
 
 		private string CrossPlatformFilePath {
 			get {
@@ -153,7 +164,9 @@
 				string jsonString = File.ReadAllText(CrossPlatformFilePath);
 
 				JSON json = JSON.ParseString(jsonString);
-				m_PlayerScriptableObject = (ScriptableObject)json.zDeserialize(type, null);
+
+				json.zDeserialize(type, null, AudioClipsGUID, out object obj);
+				m_PlayerScriptableObject = (ScriptableObject)obj;
 
 			}
 		}
@@ -170,7 +183,7 @@
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 
 			// Save the data
-			JSON json = JSON.Serialize(playerScriptableObject);
+			JSON json = JSON.Serialize(playerScriptableObject, AudioClipsGUID);
 			File.WriteAllText(path, json.CreatePrettyString());
 
 			// Save the data

@@ -25,6 +25,7 @@
 			DrawScript();
 			EditorGUILayout.PropertyField(FilePathProperty); 
 			EditorGUILayout.PropertyField(DefaultScriptableObjectProperty);
+			EditorGUILayout.PropertyField(AudioClipsGUIDProperty);
 			DrawScriptableObjectHelpBox();
 			DrawFileHelpBox();
 			DrawPlayerScriptableObject();
@@ -61,6 +62,8 @@
 
 		private SerializedProperty m_PlayerScriptableObjectProperty;
 
+		private SerializedProperty m_AudioClipsGUIDProperty;
+
 		#endregion
 
 
@@ -89,6 +92,10 @@
 
 		private SerializedProperty PlayerScriptableObjectProperty {
 			get { return m_PlayerScriptableObjectProperty = m_PlayerScriptableObjectProperty ?? serializedObject.FindProperty("m_PlayerScriptableObject"); }
+		}
+
+		private SerializedProperty AudioClipsGUIDProperty {
+			get { return m_AudioClipsGUIDProperty = m_AudioClipsGUIDProperty ?? serializedObject.FindProperty("m_AudioClipsGUID"); }
 		}
 
 		#endregion
