@@ -12,7 +12,8 @@
 		#region Public Methods
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
-			if (property.isExpanded) {
+			base.GetPropertyHeight(property, label);
+			if (Property.isExpanded) {
 				return FieldHeight * 3;
 			} else {
 				return FieldHeight;
@@ -48,15 +49,11 @@
 		#region Private Properties
 
 		private SerializedProperty AssetProperty {
-			get {
-				return Property.FindPropertyRelative("Asset");
-			}
+			get { return Property.FindPropertyRelative("Asset"); }
 		}
 
 		private SerializedProperty GUIDProperty {
-			get {
-				return Property.FindPropertyRelative("GUID");
-			}
+			get { return Property.FindPropertyRelative("GUID"); }
 		}
 		
 		private string AssetGUID {
