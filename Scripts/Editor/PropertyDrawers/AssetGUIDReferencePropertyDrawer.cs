@@ -1,5 +1,5 @@
 ﻿namespace CocodriloDog.App {
-
+	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using CocodriloDog.Core;
@@ -29,10 +29,10 @@
 
 			base.OnGUI(position, property, label);
 
-			EditorGUI.BeginProperty(position, label, property);
-			property.isExpanded = EditorGUI.Foldout(GetNextPosition(), property.isExpanded, label);
+			EditorGUI.BeginProperty(Position, Label, Property);
+			Property.isExpanded = EditorGUI.Foldout(GetNextPosition(), Property.isExpanded, Label);
 
-			if (property.isExpanded) {
+			if (Property.isExpanded) {
 				EditorGUI.indentLevel++;
 				DrawAsset();
 				DrawGUID();
@@ -46,26 +46,25 @@
 		#endregion
 
 
+		#region Protected Methods
+
+		protected override void InitializePropertiesOnGUI() {
+			base.InitializePropertiesOnGUI();
+			AssetProperty = Property.FindPropertyRelative("Asset");
+			GUIDProperty = Property.FindPropertyRelative("GUID");
+			AssignAssetGUI();
+		}
+
+		#endregion
+
+
 		#region Private Properties
 
-		private SerializedProperty AssetProperty {
-			get { return Property.FindPropertyRelative("Asset"); }
-		}
+		private SerializedProperty AssetProperty { get; set; }
 
-		private SerializedProperty GUIDProperty {
-			get { return Property.FindPropertyRelative("GUID"); }
-		}
+		private SerializedProperty GUIDProperty { get; set; }
 		
-		private string AssetGUID {
-			get {
-				Object obj = AssetProperty.objectReferenceValue;
-				if (obj != null) {
-					string assetPath = AssetDatabase.GetAssetPath(obj);
-					return AssetDatabase.AssetPathToGUID(assetPath);
-				}
-				return null;
-			}
-		}
+		private string AssetGUID { get; set; }
 
 		#endregion
 
@@ -81,6 +80,16 @@
 			GUIDProperty.stringValue = AssetGUID;
 			EditorGUI.PropertyField(GetNextPosition(), GUIDProperty);
 			EditorGUI.EndDisabledGroup();
+		}
+
+		private void AssignAssetGUI() {
+			UnityEngine.Object obj = AssetProperty.objectReferenceValue;
+			if (obj != null) {
+				string assetPath = AssetDatabase.GetAssetPath(obj);
+				AssetGUID = AssetDatabase.AssetPathToGUID(assetPath);
+			} else {
+				AssetGUID = null;
+			}
 		}
 
 		#endregion
