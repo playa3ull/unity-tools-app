@@ -48,8 +48,8 @@
 
 		#region Protected Methods
 
-		protected override void InitializePropertiesOnGUI() {
-			base.InitializePropertiesOnGUI();
+		protected override void InitializePropertiesForOnGUI() {
+			base.InitializePropertiesForOnGUI();
 			AssetProperty = Property.FindPropertyRelative("Asset");
 			GUIDProperty = Property.FindPropertyRelative("GUID");
 			AssignAssetGUI();
