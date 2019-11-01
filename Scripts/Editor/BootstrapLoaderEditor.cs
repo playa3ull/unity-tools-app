@@ -23,7 +23,6 @@
 						);
 					}
 					break;
-
 				case PlayModeStateChange.EnteredEditMode:
 					foreach (BootstrapLoader loader in Resources.LoadAll<BootstrapLoader>("")) {
 						EditorSceneManager.CloseScene(
