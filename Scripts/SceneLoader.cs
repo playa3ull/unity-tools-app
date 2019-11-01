@@ -54,17 +54,6 @@
 		#endregion
 
 
-		#region Public Methods
-
-		public event Action<float> OnLoadProgress;
-
-		public event Action OnLoadComplete;
-
-		public event Action OnSceneActivated;
-
-		#endregion
-
-
 		#region Unity Methods
 
 		private void Awake() {
@@ -135,8 +124,7 @@
 				if (value != m_IsSceneLoaded) {
 					m_IsSceneLoaded = value;
 					if(m_IsSceneLoaded) {
-						Debug.LogFormat("Loaded {0}", m_AsyncOperation.progress);
-						OnLoadComplete?.Invoke();
+						UI.DisplayLoadComplete();
 					}
 				}
 			}
@@ -148,6 +136,7 @@
 		#region Private Methods - Loading
 
 		private void _LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
+			UI.DisplayLoadStart();
 			ShowCanvasGroup(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
 		}
 
@@ -167,22 +156,17 @@
 			m_AsyncOperation.allowSceneActivation = autoActivate;
 
 			while (!m_AsyncOperation.isDone) {
-
 				if (m_AsyncOperation.progress < 0.9f) {
-					Debug.LogFormat("Loading {0}", m_AsyncOperation.progress);
-					OnLoadProgress?.Invoke(m_AsyncOperation.progress);
 					IsSceneLoaded = false;
 				} else {
 					IsSceneLoaded = true;
 				}
-
+				// Update the progress always, in case it reached 0.9 very fast
+				UI.DisplayLoadProgress(m_AsyncOperation.progress);
 				yield return null;
 			}
 
 			HideCanvasGroup(true);
-
-			Debug.LogFormat("Activated {0}", m_AsyncOperation.progress);
-			OnSceneActivated?.Invoke();
 
 			// Reset fields
 			IsSceneLoaded = false;

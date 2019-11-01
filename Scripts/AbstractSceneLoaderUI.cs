@@ -17,6 +17,17 @@
 		#endregion
 
 
+		#region Public Methods
+
+		public virtual void DisplayLoadStart() { }
+
+		public virtual void DisplayLoadProgress(float progress) { }
+
+		public virtual void DisplayLoadComplete() { }
+
+		#endregion
+
+
 	}
 
 }
