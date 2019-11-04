@@ -124,7 +124,7 @@
 		private ScriptableObject m_DefaultScriptableObject;
 
 		[SerializeField]
-		private AudioClipsGUID m_AudioClipsGUID;
+		private AssetsGUID m_AssetsGUID;
 		
 		[SerializeField]
 		private ScriptableObject m_PlayerScriptableObject;
@@ -138,8 +138,8 @@
 			get { return m_DefaultScriptableObject; }
 		}
 
-		private AudioClipsGUID AudioClipsGUID {
-			get { return m_AudioClipsGUID; }
+		private AssetsGUID AssetsGUID {
+			get { return m_AssetsGUID; }
 		}
 
 		private string CrossPlatformFilePath {
@@ -177,7 +177,7 @@
 			if (File.Exists(CrossPlatformFilePath)) {
 				string jsonString = File.ReadAllText(CrossPlatformFilePath);
 				JSON json = JSON.ParseString(jsonString);
-				return (ScriptableObject)json.Deserialize(type, AudioClipsGUID);
+				return (ScriptableObject)json.Deserialize(type, AssetsGUID);
 			}
 			return null;
 		}
@@ -188,7 +188,7 @@
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 
 			// Save the data
-			JSON json = JSON.Serialize(playerScriptableObject, AudioClipsGUID);
+			JSON json = JSON.Serialize(playerScriptableObject, AssetsGUID);
 			File.WriteAllText(path, json.CreatePrettyString());
 
 		}

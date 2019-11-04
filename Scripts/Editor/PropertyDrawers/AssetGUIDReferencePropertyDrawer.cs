@@ -6,6 +6,7 @@
 	using UnityEditor;
 	using UnityEngine;
 
+	[CustomPropertyDrawer(typeof(AssetGUIDReference))]
 	public class AssetGUIDReferencePropertyDrawer : PropertyDrawerBase {
 
 

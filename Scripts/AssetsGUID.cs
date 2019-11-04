@@ -10,11 +10,8 @@
 	/// Base class for assets that will collect a list of other assets and serialize
 	/// their GUID.
 	/// </summary>
-	/// <typeparam name="T_Asset"></typeparam>
-	/// <typeparam name="T_Reference"></typeparam>
-	public class AssetsGUID<T_Asset, T_Reference> : ScriptableObject 
-		where T_Asset : UnityEngine.Object
-		where T_Reference : AssetGUIDReference<T_Asset> {
+	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Assets GUID")]
+	public class AssetsGUID : ScriptableObject {
 
 
 		#region Public Methods
@@ -24,8 +21,8 @@
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>The GUID string o null if not found.</returns>
-		public string GUIDFromAsset(T_Asset obj) {
-			T_Reference assetReference = AssetReferences.FirstOrDefault(ar => ar.Asset == obj);
+		public string GUIDFromAsset(UnityEngine.Object obj) {
+			AssetGUIDReference assetReference = AssetReferences.FirstOrDefault(ar => ar.Asset == obj);
 			return assetReference?.GUID;
 		}
 
@@ -36,8 +33,8 @@
 		/// <returns>
 		/// The asset that has the <paramref name="guid"/> or null if not found.
 		/// </returns>
-		public T_Asset AssetFromGUID(string guid) {
-			T_Reference assetReference = AssetReferences.FirstOrDefault(ar => ar.GUID == guid);
+		public UnityEngine.Object AssetFromGUID(string guid) {
+			AssetGUIDReference assetReference = AssetReferences.FirstOrDefault(ar => ar.GUID == guid);
 			return assetReference?.Asset;
 		}
 
@@ -47,15 +44,15 @@
 		#region Private Fields
 
 		[SerializeField]
-		private List<T_Reference> m_AssetReferences;
+		private List<AssetGUIDReference> m_AssetReferences;
 
 		#endregion
 
 
 		#region Private Properties
 
-		private List<T_Reference> AssetReferences {
-			get { return m_AssetReferences = m_AssetReferences ?? new List<T_Reference>(); }
+		private List<AssetGUIDReference> AssetReferences {
+			get { return m_AssetReferences = m_AssetReferences ?? new List<AssetGUIDReference>(); }
 		}
 
 		#endregion
@@ -66,16 +63,14 @@
 	/// <summary>
 	/// Base class that pairs an asset with its corresponding GUID.
 	/// </summary>
-	/// <typeparam name="T_Asset"></typeparam>
 	[Serializable]
-	public class AssetGUIDReference<T_Asset>
-		where T_Asset : UnityEngine.Object {
+	public class AssetGUIDReference {
 
 
 		#region Public Fields
 
 		[SerializeField]
-		public T_Asset Asset;
+		public UnityEngine.Object Asset;
 
 		[SerializeField]
 		public string GUID;
