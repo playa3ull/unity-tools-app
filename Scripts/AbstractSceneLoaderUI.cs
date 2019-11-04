@@ -19,11 +19,15 @@
 
 		#region Public Methods
 
-		public virtual void DisplayLoadStart() { }
+		public virtual void OnFadeIn(float duration) { }
 
-		public virtual void DisplayLoadProgress(float progress) { }
+		public virtual void OnLoadStart() { }
 
-		public virtual void DisplayLoadComplete() { }
+		public virtual void OnLoadProgress(float progress) { }
+
+		public virtual void OnLoadComplete() { }
+
+		public virtual void OnFadeOut(float duration) { }
 
 		#endregion
 

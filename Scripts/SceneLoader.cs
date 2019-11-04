@@ -15,23 +15,16 @@
 		#region Public Static Methods
 
 		public static void LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
-			Instance._LoadScene(sceneName, loadSceneMode, autoActivate);
+			if (Instance != null) {
+				Instance._LoadScene(sceneName, loadSceneMode, autoActivate);
+			}
 		}
 
 		public static void ActivateScene() {
-			Instance._ActivateScene();
+			if (Instance != null) {
+				Instance._ActivateScene();
+			}
 		}
-
-		#endregion
-
-
-		#region Public Fields
-
-		[SerializeField]
-		public string DefaultSceneName;
-
-		[SerializeField]
-		public LoadSceneMode DefaultSceneLoadMode;
 
 		#endregion
 
@@ -41,13 +34,14 @@
 		AbstractSceneLoaderUI UI {
 			get { return m_UI; }
 			set {
-				if(m_UI != null) {
-					SubscribeToUI();
-				}
-				m_UI = value;
 				if (m_UI != null) {
 					UnsubscribeFromUI();
 				}
+				m_UI = value ?? throw new ArgumentNullException(string.Format("{0} can not be null", nameof(UI)));
+				if (enabled) {
+					SubscribeToUI();
+				}
+				HideUI(false);
 			}
 		}
 
@@ -56,13 +50,10 @@
 
 		#region Unity Methods
 
-		private void Awake() {
+		protected override void Awake() {
+			base.Awake();
 			DontDestroyOnLoad(gameObject);
-		}
-
-		private void Start() {
-			LoadScene(DefaultSceneName, DefaultSceneLoadMode);
-			HideCanvasGroup(false);
+			HideUI(false);
 		}
 
 		private void OnEnable() {
@@ -97,7 +88,7 @@
 		#endregion
 
 
-		#region Private Fields
+		#region Private Fields - Serialized
 
 		[SerializeField]
 		private AbstractSceneLoaderUI m_UI;
@@ -105,13 +96,19 @@
 		#endregion
 
 
-		#region Private Fields
+		#region Private Fields - Non Serialized
 
 		[NonSerialized]
 		private AsyncOperation m_AsyncOperation;
 
 		[NonSerialized]
 		private bool m_IsSceneLoaded;
+
+		[NonSerialized]
+		private float m_FadeInTime = 0.2f;
+
+		[NonSerialized]
+		private float m_FadeOutTime = 0.2f;
 
 		#endregion
 
@@ -124,7 +121,7 @@
 				if (value != m_IsSceneLoaded) {
 					m_IsSceneLoaded = value;
 					if(m_IsSceneLoaded) {
-						UI.DisplayLoadComplete();
+						UI.OnLoadComplete();
 					}
 				}
 			}
@@ -136,17 +133,17 @@
 		#region Private Methods - Loading
 
 		private void _LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
-			UI.DisplayLoadStart();
-			ShowCanvasGroup(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
+			// Reset to before the fade in so that no progress bars are shown filled
+			UI.OnLoadProgress(0);
+			ShowUI(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
 		}
 
 		private void _ActivateScene() {
 			m_AsyncOperation.allowSceneActivation = true;
-			Debug.LogFormat("Activate scene");
 		}
 
 		private void LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
-			gameObject.SetActive(true);
+			UI.OnLoadStart();
 			StartCoroutine(_LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
 		}
 
@@ -162,11 +159,11 @@
 					IsSceneLoaded = true;
 				}
 				// Update the progress always, in case it reached 0.9 very fast
-				UI.DisplayLoadProgress(m_AsyncOperation.progress);
+				UI.OnLoadProgress(m_AsyncOperation.progress);
 				yield return null;
 			}
 
-			HideCanvasGroup(true);
+			HideUI(true);
 
 			// Reset fields
 			IsSceneLoaded = false;
@@ -178,28 +175,30 @@
 
 		#region Private Methods - UI
 
-		private void ShowCanvasGroup(bool animated, Action onComplete = null) {
-			gameObject.SetActive(true);
+		private void ShowUI(bool animated, Action onComplete = null) {
+			UI.gameObject.SetActive(true);
 			if(animated) {
+				UI.OnFadeIn(m_FadeInTime);
 				Animate.GetMotion(this, AlphaKey, v => UI.CanvasGroup.alpha = v)
 					.SetEasing(AnimateEasing.QuadInOut)
 					.SetOnComplete(() => { onComplete?.Invoke();})
-					.Play(0, 1, 0.2f);
+					.Play(0, 1, m_FadeInTime);
 			} else {
 				UI.CanvasGroup.alpha = 1;
 				onComplete?.Invoke();
 			}
 		}
 
-		private void HideCanvasGroup(bool animated) {
+		private void HideUI(bool animated) {
 			if (animated) {
+				UI.OnFadeOut(m_FadeOutTime);
 				Animate.GetMotion(this, AlphaKey, v => UI.CanvasGroup.alpha = v)
 					.SetEasing(AnimateEasing.QuadInOut)
-					.SetOnComplete(() => gameObject.SetActive(false))
-					.Play(1, 0, 0.2f);
+					.SetOnComplete(() => UI.gameObject.SetActive(false))
+					.Play(1, 0, m_FadeOutTime);
 			} else {
 				UI.CanvasGroup.alpha = 0;
-				gameObject.SetActive(false);
+				UI.gameObject.SetActive(false);
 			}
 		}
 

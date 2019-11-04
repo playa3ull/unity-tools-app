@@ -17,12 +17,23 @@
 	/// carried out by the <c>BootstrapLoaderEditor</c>.
 	/// </remarks>
 	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Bootstrap Prefabs")]
-	public class BootstrapLoader : ScriptableObject {
+	public class BootstrapPrefabs : ScriptableObject {
 
 
 		#region Public Properties
 
-		public SceneAsset Scene { get { return m_Scene; } }
+		public int PrefabsCount {
+			get { return m_Prefabs.Count; }
+		}
+
+		#endregion
+
+
+		#region Public Methods
+
+		public GameObject GetPrefabAt(int index) {
+			return m_Prefabs[index];
+		}
 
 		#endregion
 
@@ -30,7 +41,7 @@
 		#region Private Fields
 
 		[SerializeField]
-		private SceneAsset m_Scene;
+		private List<GameObject> m_Prefabs;
 
 		#endregion
 
