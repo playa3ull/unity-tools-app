@@ -14,9 +14,9 @@
 	/// Normally, the first scene of a unity project should contain all the objects that will 
 	/// live for all the lifecycle of the app. This asset has a reference to those objects and
 	/// It can be assigned to a <see cref="BootInstantiator"/> in the first scene of the
-	/// Unity project, but it will also instantiate the prefabs automatically if the developer
-	/// runs the project from other scene. This automation in performed in the
-	/// <c>BootPrefabsEditor</c>.
+	/// Unity project to be instantiated when tha app boots, but it will also instantiate the
+	/// prefabs automatically if the developer runs the project from other scene. This automation
+	/// in performed in the <c>BootPrefabsEditor</c>.
 	/// </remarks>
 	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Boot Prefabs")]
 	public class BootPrefabs : ScriptableObject {

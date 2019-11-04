@@ -9,6 +9,9 @@
 
 		#region Public Fields
 
+		/// <summary>
+		/// A <see cref="BootPrefabs"/> which prefabs will be instantiated.
+		/// </summary>
 		[SerializeField]
 		public BootPrefabs BootPrefabs;
 

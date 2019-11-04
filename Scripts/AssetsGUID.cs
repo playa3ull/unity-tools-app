@@ -7,8 +7,12 @@
 	using UnityEngine;
 
 	/// <summary>
-	/// Assets that will collect a list of other assets and serialize their GUID.
+	/// This will collect a list of assets and serialize their respective GUIDs.
 	/// </summary>
+	/// <remarks>
+	///	This was created to work in conjunction with <see cref="PlayerScriptableStorage"/>
+	///	to store the reference to assets as GUIDs.
+	/// </remarks>
 	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Assets GUID")]
 	public class AssetsGUID : ScriptableObject {
 

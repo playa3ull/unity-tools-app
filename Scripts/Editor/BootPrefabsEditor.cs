@@ -9,7 +9,8 @@
 	/// Custom editor for <see cref="BootPrefabs"/>. It instantiates the prefabs
 	/// when no <see cref="BootInstantiator"/> is found. This would be the case
 	/// when running the project from a scene other than the boot scene and helps
-	/// to simulate the runtime state without needing to run the boot scene first.
+	/// to simulate a runtime state with the boot objects in place without needing
+	/// to run the boot scene first.
 	/// </summary>
 	[CustomEditor(typeof(BootPrefabs))]
 	public class BootPrefabsEditor : Editor {

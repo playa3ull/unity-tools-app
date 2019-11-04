@@ -9,17 +9,36 @@
 	using UnityEngine.SceneManagement;
 	using UnityEngine.UI;
 
+	/// <summary>
+	/// A singleton that can load scenes asynchronously and display the load progress.
+	/// </summary>
+	/// <remarks>
+	/// In needs a reference to a <see cref="AbstractSceneLoaderUI"/> in order to display
+	/// the download progress.
+	/// </remarks>
 	public class SceneLoader : MonoSingleton<SceneLoader> {
 
 
 		#region Public Static Methods
 
+		/// <summary>
+		/// Load a scene.
+		/// </summary>
+		/// <param name="sceneName">The name of the scene</param>
+		/// <param name="loadSceneMode">The <see cref="LoadSceneMode"/></param>
+		/// <param name="autoActivate">
+		/// Will the scene activate immediatly after it loads? If false, a call
+		/// to <see cref="ActivateScene"/> is required to activate the scene.
+		/// </param>
 		public static void LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
 			if (Instance != null) {
 				Instance._LoadScene(sceneName, loadSceneMode, autoActivate);
 			}
 		}
 
+		/// <summary>
+		/// Activates the scene.
+		/// </summary>
 		public static void ActivateScene() {
 			if (Instance != null) {
 				Instance._ActivateScene();
@@ -29,9 +48,29 @@
 		#endregion
 
 
+		#region Public Fields
+
+		/// <summary>
+		/// The duration of the fade in effect.
+		/// </summary>
+		[SerializeField]
+		public float FadeInTime = 0.2f;
+
+		/// <summary>
+		/// The duration of the fade out effect.
+		/// </summary>
+		[SerializeField]
+		public float FadeOutTime = 0.2f;
+
+		#endregion
+
+
 		#region Public Properties
 
-		AbstractSceneLoaderUI UI {
+		/// <summary>
+		/// The UI.
+		/// </summary>
+		public AbstractSceneLoaderUI UI {
 			get { return m_UI; }
 			set {
 				if (m_UI != null) {
@@ -58,6 +97,16 @@
 
 		private void OnEnable() {
 			SubscribeToUI();
+		}
+
+		private void OnValidate() {
+			FadeInTime = Mathf.Clamp(FadeInTime, 0, float.MaxValue);
+			FadeOutTime = Mathf.Clamp(FadeOutTime, 0, float.MaxValue);
+		}
+
+		private void Reset() {
+			FadeInTime = 0.2f;
+			FadeOutTime = 0.2f;
 		}
 
 		private void OnDisable() {
@@ -104,29 +153,6 @@
 		[NonSerialized]
 		private bool m_IsSceneLoaded;
 
-		[NonSerialized]
-		private float m_FadeInTime = 0.2f;
-
-		[NonSerialized]
-		private float m_FadeOutTime = 0.2f;
-
-		#endregion
-
-
-		#region Private Properties
-
-		private bool IsSceneLoaded {
-			get { return m_IsSceneLoaded; }
-			set {
-				if (value != m_IsSceneLoaded) {
-					m_IsSceneLoaded = value;
-					if(m_IsSceneLoaded) {
-						UI.OnLoadComplete();
-					}
-				}
-			}
-		}
-
 		#endregion
 
 
@@ -154,9 +180,9 @@
 
 			while (!m_AsyncOperation.isDone) {
 				if (m_AsyncOperation.progress < 0.9f) {
-					IsSceneLoaded = false;
+					UpdateIsSceneLoaded(false);
 				} else {
-					IsSceneLoaded = true;
+					UpdateIsSceneLoaded(true);
 				}
 				// Update the progress always, in case it reached 0.9 very fast
 				UI.OnLoadProgress(m_AsyncOperation.progress);
@@ -166,8 +192,17 @@
 			HideUI(true);
 
 			// Reset fields
-			IsSceneLoaded = false;
+			UpdateIsSceneLoaded(false);
 			m_AsyncOperation = null;
+		}
+
+		private void UpdateIsSceneLoaded(bool value) {
+			if (value != m_IsSceneLoaded) {
+				m_IsSceneLoaded = value;
+				if (m_IsSceneLoaded) {
+					UI.OnLoadComplete();
+				}
+			}
 		}
 
 		#endregion
@@ -178,11 +213,11 @@
 		private void ShowUI(bool animated, Action onComplete = null) {
 			UI.gameObject.SetActive(true);
 			if(animated) {
-				UI.OnFadeIn(m_FadeInTime);
+				UI.OnFadeIn(FadeInTime);
 				Animate.GetMotion(this, AlphaKey, v => UI.CanvasGroup.alpha = v)
 					.SetEasing(AnimateEasing.QuadInOut)
 					.SetOnComplete(() => { onComplete?.Invoke();})
-					.Play(0, 1, m_FadeInTime);
+					.Play(0, 1, FadeInTime);
 			} else {
 				UI.CanvasGroup.alpha = 1;
 				onComplete?.Invoke();
@@ -191,11 +226,11 @@
 
 		private void HideUI(bool animated) {
 			if (animated) {
-				UI.OnFadeOut(m_FadeOutTime);
+				UI.OnFadeOut(FadeOutTime);
 				Animate.GetMotion(this, AlphaKey, v => UI.CanvasGroup.alpha = v)
 					.SetEasing(AnimateEasing.QuadInOut)
 					.SetOnComplete(() => UI.gameObject.SetActive(false))
-					.Play(1, 0, m_FadeOutTime);
+					.Play(1, 0, FadeOutTime);
 			} else {
 				UI.CanvasGroup.alpha = 0;
 				UI.gameObject.SetActive(false);

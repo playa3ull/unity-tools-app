@@ -24,6 +24,9 @@
 
 		#region Public Fields
 
+		/// <summary>
+		/// A path to store the file. It is relative to <see cref="Application.persistentDataPath"/>
+		/// </summary>
 		public string FilePath;
 
 		#endregion
@@ -31,15 +34,17 @@
 
 		#region Public Properties
 
+		/// <summary>
+		/// Is there a stored file?
+		/// </summary>
 		public bool FileExists {
 			get { return File.Exists(CrossPlatformFilePath); }
 		}
 
-		#endregion
-
-
-		#region Public Methods
-
+		/// <summary>
+		/// The player version of the scriptable object, either loaded from disk or
+		/// copied from the <see cref="DefaultScriptableObject"/>.
+		/// </summary>
 		public ScriptableObject PlayerScriptableObject {
 			get {
 
@@ -68,6 +73,34 @@
 			private set { m_PlayerScriptableObject = value; }
 		}
 
+		/// <summary>
+		/// The <see cref="ScriptableObject"/> that is a starting point for the data
+		/// that will be modified and then saved into disk.
+		/// </summary>
+		private ScriptableObject DefaultScriptableObject {
+			get { return m_DefaultScriptableObject; }
+		}
+
+		/// <summary>
+		/// An optional <see cref="App.AssetsGUID"/> that must be provided when references to
+		/// assets such as <see cref="AudioClip"/> will be saved in the data file.
+		/// </summary>
+		public AssetsGUID AssetsGUID {
+			get { return m_AssetsGUID; }
+		}
+
+		#endregion
+
+
+		#region Public Methods
+
+		/// <summary>
+		/// Gets the <see cref="PlayerScriptableObject"/> of the <typeparamref name="T"/> type.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns>
+		/// The <see cref="PlayerScriptableObject"/> of the <typeparamref name="T"/> type.
+		/// </returns>
 		public T GetPlayerScriptableObject<T>() where T: ScriptableObject {
 
 			if (DefaultScriptableObject == null) {
@@ -93,6 +126,10 @@
 
 		}
 
+		/// <summary>
+		/// Saves the <see cref="PlayerScriptableObject"/> in its current state in the
+		/// specified <see cref="FilePath"/>.
+		/// </summary>
 		public void Save() {
 			if (DefaultScriptableObject == null) {
 				throw new InvalidOperationException(
@@ -102,6 +139,9 @@
 			Save(PlayerScriptableObject, CrossPlatformFilePath);
 		}
 
+		/// <summary>
+		/// Deletes the file at <see cref="FilePath"/>, if any.
+		/// </summary>
 		public void Delete() {
 			if (PlayerScriptableObject != null) {
 				if(Application.isPlaying) {
@@ -133,14 +173,6 @@
 
 
 		#region Private Properties
-
-		private ScriptableObject DefaultScriptableObject {
-			get { return m_DefaultScriptableObject; }
-		}
-
-		private AssetsGUID AssetsGUID {
-			get { return m_AssetsGUID; }
-		}
 
 		private string CrossPlatformFilePath {
 			get {
