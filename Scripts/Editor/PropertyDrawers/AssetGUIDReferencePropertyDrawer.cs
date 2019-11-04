@@ -1,4 +1,5 @@
 ﻿namespace CocodriloDog.App {
+
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
@@ -6,6 +7,12 @@
 	using UnityEditor;
 	using UnityEngine;
 
+	/// <summary>
+	/// Property drawer for <see cref="AssetGUIDReference"/>.
+	/// </summary>
+	/// <remarks>
+	/// This looks for the GUID of the assigned assets and displays them as read-only.
+	/// </remarks>
 	[CustomPropertyDrawer(typeof(AssetGUIDReference))]
 	public class AssetGUIDReferencePropertyDrawer : PropertyDrawerBase {
 

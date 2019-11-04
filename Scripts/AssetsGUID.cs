@@ -7,8 +7,7 @@
 	using UnityEngine;
 
 	/// <summary>
-	/// Base class for assets that will collect a list of other assets and serialize
-	/// their GUID.
+	/// Assets that will collect a list of other assets and serialize their GUID.
 	/// </summary>
 	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Assets GUID")]
 	public class AssetsGUID : ScriptableObject {
@@ -61,7 +60,7 @@
 	}
 
 	/// <summary>
-	/// Base class that pairs an asset with its corresponding GUID.
+	/// A class pairs an asset with its corresponding GUID.
 	/// </summary>
 	[Serializable]
 	public class AssetGUIDReference {

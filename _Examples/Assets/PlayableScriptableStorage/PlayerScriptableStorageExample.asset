@@ -15,5 +15,5 @@ MonoBehaviour:
   FilePath: Folder/Subfolder/File.json
   m_DefaultScriptableObject: {fileID: 11400000, guid: ed5564a2d993b4efa9baaa9608b1d8b6,
     type: 2}
-  m_AudioClipsGUID: {fileID: 11400000, guid: d839bb1f9f951412280bcdc2f9c6a5af, type: 2}
+  m_AssetsGUID: {fileID: 11400000, guid: d839bb1f9f951412280bcdc2f9c6a5af, type: 2}
   m_PlayerScriptableObject: {fileID: 0}
