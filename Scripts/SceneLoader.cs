@@ -99,6 +99,11 @@
 			SubscribeToUI();
 		}
 
+		private void Start() {
+			// Initialize so that it is not created OnDestroy()
+			Animate animate = Animate.Instance;
+		}
+
 		private void OnValidate() {
 			FadeInTime = Mathf.Clamp(FadeInTime, 0, float.MaxValue);
 			FadeOutTime = Mathf.Clamp(FadeOutTime, 0, float.MaxValue);
