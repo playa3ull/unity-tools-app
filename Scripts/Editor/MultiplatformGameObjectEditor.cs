@@ -22,6 +22,8 @@
 
 		protected override float ResourceLabelWidth { get { return 80; } }
 
+		protected override string FallbackKeyValue { get { return ((MultiplatformGameObject)target).FallbackKey.ToString(); } }
+
 		#endregion
 
 

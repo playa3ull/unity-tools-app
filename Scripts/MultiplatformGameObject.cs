@@ -12,8 +12,12 @@
 
 		#region Public Properties
 
-		public override RuntimePlatform DefaultKey {
+		public override RuntimePlatform CurrentKey {
 			get { return Application.platform; }
+		}
+
+		public override RuntimePlatform FallbackKey {
+			get { return RuntimePlatform.WindowsPlayer; }
 		}
 
 		#endregion
