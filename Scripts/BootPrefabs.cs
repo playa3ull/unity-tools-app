@@ -80,6 +80,45 @@
 		#endregion
 
 
+#if UNITY_EDITOR
+
+
+		#region Public Properties
+
+		public bool BootOnlyOnSpecificScenes {
+			get { return m_BootOnlyOnSpecificScenes; }
+		}
+
+		#endregion
+
+
+		#region Public Methods
+
+		public int SpecificScenesCount {
+			get { return m_Prefabs.Count; }
+		}
+
+		public SceneAsset GetSpecificSceneAt(int index) {
+			return m_SpecificScenes[index];
+		}
+
+		#endregion
+
+
+		#region Private Fields
+
+		[SerializeField]
+		private bool m_BootOnlyOnSpecificScenes;
+
+		[SerializeField]
+		private List<SceneAsset> m_SpecificScenes;
+
+		#endregion
+
+
+#endif
+
+
 	}
 
 }
