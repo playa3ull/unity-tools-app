@@ -112,19 +112,7 @@
 		public override void OnInspectorGUI() {
 			serializedObject.Update();
 			EditorGUILayout.Space();
-			if (BootOnlyOnSpecificScenesProperty.boolValue) {
-				EditorGUILayout.HelpBox(
-					"These prefabs will be instantiated if no BootInstantiator is found in the " +
-					"active scene, but only if the active scene is one of the specific scenes.",
-					MessageType.Info
-				);
-			} else {
-				EditorGUILayout.HelpBox(
-					"These prefabs will be instantiated if no BootInstantiator is found in the " +
-					"active scene.",
-					MessageType.Info
-				);
-			}
+			DrawHelpBox();
 			EditorGUILayout.Space();
 			PrefabsList.DoLayoutList();
 			DrawBootOnlyOnSpecificScenes();
@@ -191,6 +179,22 @@
 
 		#region Private Methods
 
+		private void DrawHelpBox() {
+			if (BootOnlyOnSpecificScenesProperty.boolValue) {
+				EditorGUILayout.HelpBox(
+					"These prefabs will be instantiated if no BootInstantiator is found in the " +
+					"active scene, but only if the active scene is one of the specific scenes.",
+					MessageType.Info
+				);
+			} else {
+				EditorGUILayout.HelpBox(
+					"These prefabs will be instantiated if no BootInstantiator is found in the " +
+					"active scene.",
+					MessageType.Info
+				);
+			}
+		}
+
 		private void PrefabsList_drawHeaderCallback(Rect rect) {
 			EditorGUI.LabelField(rect, ObjectNames.NicifyVariableName(PrefabsProperty.name));
 		}
@@ -198,7 +202,8 @@
 		private void PrefabsList_drawElementCallback(Rect rect, int index, bool isActive, bool isFocused) {
 			SerializedProperty prefabProperty = PrefabsProperty.GetArrayElementAtIndex(index);
 			Rect propertyRect = rect;
-			propertyRect.height -= 2;
+			propertyRect.y += 2;
+			propertyRect.height = EditorGUIUtility.singleLineHeight;
 			EditorGUI.PropertyField(propertyRect, prefabProperty);
 		}
 
@@ -221,7 +226,8 @@
 		private void SpecificScenes_drawElementCallback(Rect rect, int index, bool isActive, bool isFocused) {
 			SerializedProperty prefabProperty = SpecificScenesProperty.GetArrayElementAtIndex(index);
 			Rect propertyRect = rect;
-			propertyRect.height -= 2;
+			propertyRect.y += 2;
+			propertyRect.height = EditorGUIUtility.singleLineHeight;
 			EditorGUI.PropertyField(propertyRect, prefabProperty);
 		}
 

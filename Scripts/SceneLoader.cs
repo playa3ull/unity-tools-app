@@ -13,7 +13,7 @@
 	/// A singleton that can load scenes asynchronously and display the load progress.
 	/// </summary>
 	/// <remarks>
-	/// In needs a reference to a <see cref="AbstractSceneLoaderUI"/> in order to display
+	/// In needs a reference to a <see cref="AbstractSceneLoaderUIController"/> in order to display
 	/// the download progress.
 	/// </remarks>
 	public class SceneLoader : MonoSingleton<SceneLoader> {
@@ -70,13 +70,13 @@
 		/// <summary>
 		/// The UI.
 		/// </summary>
-		public AbstractSceneLoaderUI UI {
-			get { return m_UI; }
+		public AbstractSceneLoaderUIController UIController {
+			get { return m_UIController; }
 			set {
-				if (m_UI != null) {
+				if (m_UIController != null) {
 					UnsubscribeFromUI();
 				}
-				m_UI = value ?? throw new ArgumentNullException(string.Format("{0} can not be null", nameof(UI)));
+				m_UIController = value ?? throw new ArgumentNullException(string.Format("{0} can not be null", nameof(UIController)));
 				if (enabled) {
 					SubscribeToUI();
 				}
@@ -145,7 +145,7 @@
 		#region Private Fields - Serialized
 
 		[SerializeField]
-		private AbstractSceneLoaderUI m_UI;
+		private AbstractSceneLoaderUIController m_UIController;
 
 		#endregion
 
@@ -165,7 +165,7 @@
 
 		private void _LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
 			// Reset to before the fade in so that no progress bars are shown filled
-			UI.OnLoadProgress(0);
+			UIController.OnLoadProgress(0);
 			ShowUI(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
 		}
 
@@ -174,7 +174,7 @@
 		}
 
 		private void LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
-			UI.OnLoadStart();
+			UIController.OnLoadStart();
 			StartCoroutine(_LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
 		}
 
@@ -190,7 +190,7 @@
 					UpdateIsSceneLoaded(true);
 				}
 				// Update the progress always, in case it reached 0.9 very fast
-				UI.OnLoadProgress(m_AsyncOperation.progress);
+				UIController.OnLoadProgress(m_AsyncOperation.progress);
 				yield return null;
 			}
 
@@ -205,7 +205,7 @@
 			if (value != m_IsSceneLoaded) {
 				m_IsSceneLoaded = value;
 				if (m_IsSceneLoaded) {
-					UI.OnLoadComplete();
+					UIController.OnLoadComplete();
 				}
 			}
 		}
@@ -216,41 +216,41 @@
 		#region Private Methods - UI
 
 		private void ShowUI(bool animated, Action onComplete = null) {
-			UI.gameObject.SetActive(true);
+			UIController.gameObject.SetActive(true);
 			if(animated) {
-				UI.OnFadeIn(FadeInTime);
-				Animate.GetMotion(this, AlphaKey, v => UI.CanvasGroup.alpha = v)
+				UIController.OnFadeIn(FadeInTime);
+				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
 					.SetEasing(AnimateEasing.QuadInOut)
 					.SetOnComplete(() => { onComplete?.Invoke();})
 					.Play(0, 1, FadeInTime);
 			} else {
-				UI.CanvasGroup.alpha = 1;
+				UIController.CanvasGroup.alpha = 1;
 				onComplete?.Invoke();
 			}
 		}
 
 		private void HideUI(bool animated) {
 			if (animated) {
-				UI.OnFadeOut(FadeOutTime);
-				Animate.GetMotion(this, AlphaKey, v => UI.CanvasGroup.alpha = v)
+				UIController.OnFadeOut(FadeOutTime);
+				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
 					.SetEasing(AnimateEasing.QuadInOut)
-					.SetOnComplete(() => UI.gameObject.SetActive(false))
+					.SetOnComplete(() => UIController.gameObject.SetActive(false))
 					.Play(1, 0, FadeOutTime);
 			} else {
-				UI.CanvasGroup.alpha = 0;
-				UI.gameObject.SetActive(false);
+				UIController.CanvasGroup.alpha = 0;
+				UIController.gameObject.SetActive(false);
 			}
 		}
 
 		private void SubscribeToUI() {
-			if (UI.ActivateSceneButton != null) {
-				UI.ActivateSceneButton.onClick.AddListener(ActivateSceneButton_onClick);
+			if (UIController.ActivateSceneButton != null) {
+				UIController.ActivateSceneButton.onClick.AddListener(ActivateSceneButton_onClick);
 			}
 		}
 
 		private void UnsubscribeFromUI() {
-			if (UI.ActivateSceneButton != null) {
-				UI.ActivateSceneButton.onClick.RemoveListener(ActivateSceneButton_onClick);
+			if (UIController.ActivateSceneButton != null) {
+				UIController.ActivateSceneButton.onClick.RemoveListener(ActivateSceneButton_onClick);
 			}
 		}
 

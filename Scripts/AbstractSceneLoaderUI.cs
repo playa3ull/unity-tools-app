@@ -8,7 +8,7 @@
 	/// <summary>
 	/// Base class for UIs that react to <see cref="SceneLoader"/>
 	/// </summary>
-	public abstract class AbstractSceneLoaderUI : MonoBehaviour {
+	public abstract class AbstractSceneLoaderUIController : MonoBehaviour {
 
 
 		#region Public Properties
