@@ -115,7 +115,7 @@
 			if (BootOnlyOnSpecificScenesProperty.boolValue) {
 				EditorGUILayout.HelpBox(
 					"These prefabs will be instantiated if no BootInstantiator is found in the " +
-					"active scene and the active scene is one of the specific scenes.",
+					"active scene, but only if the active scene is one of the specific scenes.",
 					MessageType.Info
 				);
 			} else {
