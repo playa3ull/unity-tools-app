@@ -28,8 +28,9 @@
 			EditorGUILayout.PropertyField(AssetsGUIDProperty);
 			DrawScriptableObjectHelpBox();
 			DrawFileHelpBox();
+			DrawLoadUnloadButtons();
 			DrawPlayerScriptableObject();
-			DrawButtons();
+			DrawInspectButton();
 			serializedObject.ApplyModifiedProperties();
 			Repaint();
 		}
@@ -109,12 +110,6 @@
 			EditorGUI.EndDisabledGroup();
 		}
 
-		private void DrawPlayerScriptableObject() {
-			EditorGUI.BeginDisabledGroup(true);
-			EditorGUILayout.PropertyField(PlayerScriptableObjectProperty);
-			EditorGUI.EndDisabledGroup();
-		}
-
 		private void DrawScriptableObjectHelpBox() {
 			if(DefaultScriptableObjectProperty.objectReferenceValue == null) {
 				EditorGUILayout.HelpBox("A ScriptableObject must be assigned.", MessageType.Error);
@@ -135,18 +130,18 @@
 			}
 		}
 
-		private void DrawButtons() {
+		private void DrawLoadUnloadButtons() {
 			GUILayout.BeginHorizontal();
 			{
+				GUILayoutOption buttonWidth = GUILayout.Width((EditorGUIUtility.currentViewWidth - 30) / 2);
 				EditorGUI.BeginDisabledGroup(!PlayerScriptableStorage.FileExists);
 				if (PlayerScriptableObjectProperty.objectReferenceValue == null) {
-					if (GUILayout.Button("Load")) {
+					if (GUILayout.Button("Load", buttonWidth)) {
 						// Make the internal field to be assigned by invoking the getter.
 						ScriptableObject playerScriptableObject = PlayerScriptableStorage.PlayerScriptableObject;
 					}
-				}
-				if (PlayerScriptableObjectProperty.objectReferenceValue != null) {
-					if (GUILayout.Button("Unload")) {
+				} else {
+					if (GUILayout.Button("Unload", buttonWidth)) {
 						PlayerScriptableObjectProperty.objectReferenceValue = null;
 					}
 				}
@@ -168,6 +163,20 @@
 				EditorGUI.EndDisabledGroup();
 			}
 			GUILayout.EndHorizontal();
+		}
+
+		private void DrawPlayerScriptableObject() {
+			EditorGUI.BeginDisabledGroup(true);
+			EditorGUILayout.PropertyField(PlayerScriptableObjectProperty);
+			EditorGUI.EndDisabledGroup();
+		}
+
+		private void DrawInspectButton() {
+			EditorGUI.BeginDisabledGroup((PlayerScriptableObjectProperty.objectReferenceValue == null));
+			if (GUILayout.Button("Inspect Player Scriptable Object")) {
+				Selection.activeObject = PlayerScriptableObjectProperty.objectReferenceValue;
+			}
+			EditorGUI.EndDisabledGroup();
 		}
 
 		#endregion
