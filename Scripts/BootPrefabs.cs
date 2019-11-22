@@ -95,7 +95,7 @@
 		#region Public Methods
 
 		public int SpecificScenesCount {
-			get { return m_Prefabs.Count; }
+			get { return m_SpecificScenes.Count; }
 		}
 
 		public SceneAsset GetSpecificSceneAt(int index) {
