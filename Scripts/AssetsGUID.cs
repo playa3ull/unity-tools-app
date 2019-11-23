@@ -10,7 +10,7 @@
 	/// This will collect a list of assets and serialize their respective GUIDs.
 	/// </summary>
 	/// <remarks>
-	///	This was created to work in conjunction with <see cref="PlayerScriptableStorage"/>
+	///	This was created to work in conjunction with <see cref="RuntimeScriptableStorage"/>
 	///	to store the reference to assets as GUIDs.
 	/// </remarks>
 	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Assets GUID")]

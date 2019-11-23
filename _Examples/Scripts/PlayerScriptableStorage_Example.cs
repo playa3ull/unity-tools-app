@@ -13,7 +13,7 @@
 		[Header("References")]
 
 		[SerializeField]
-		public PlayerScriptableStorage PlayerScriptableStorage;
+		public RuntimeScriptableStorage PlayerScriptableStorage;
 
 
 		#region Unity Methods
@@ -150,7 +150,7 @@
 		private ExampleScriptableObject PlayerScriptableObject {
 			get {
 				if (m_PlayerScriptableObject == null) {
-					m_PlayerScriptableObject = PlayerScriptableStorage.GetPlayerScriptableObject<ExampleScriptableObject>();
+					m_PlayerScriptableObject = PlayerScriptableStorage.GetRuntimeScriptableObject<ExampleScriptableObject>();
 				}
 				return m_PlayerScriptableObject;
 			}

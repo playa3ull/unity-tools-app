@@ -6,7 +6,7 @@
 	using UnityEngine;
 	using UnityEditor;
 
-	[CustomEditor(typeof(PlayerScriptableStorage))]
+	[CustomEditor(typeof(RuntimeScriptableStorage))]
 	public class PlayerScriptableStorageEditor : Editor {
 
 
@@ -43,7 +43,7 @@
 		private void EditorApplication_PlayModeStateChanged(PlayModeStateChange obj) {
 			if(obj == PlayModeStateChange.ExitingEditMode) {
 				serializedObject.Update();
-				PlayerScriptableObjectProperty.objectReferenceValue = null;
+				RuntimeScriptableObjectProperty.objectReferenceValue = null;
 				serializedObject.ApplyModifiedProperties();
 			}
 		}
@@ -53,7 +53,7 @@
 
 		#region Private Fields
 
-		private PlayerScriptableStorage m_PlayerScriptableStorage;
+		private RuntimeScriptableStorage m_PlayerScriptableStorage;
 
 		private SerializedProperty m_ScriptProperty;
 
@@ -61,7 +61,7 @@
 
 		private SerializedProperty m_DefaultScriptableObjectProperty;
 
-		private SerializedProperty m_PlayerScriptableObjectProperty;
+		private SerializedProperty m_RuntimeScriptableObjectProperty;
 
 		private SerializedProperty m_AssetsGUIDProperty;
 
@@ -70,10 +70,10 @@
 
 		#region Private Properties
 
-		private PlayerScriptableStorage PlayerScriptableStorage {
+		private RuntimeScriptableStorage PlayerScriptableStorage {
 			get {
 				if(m_PlayerScriptableStorage == null) {
-					m_PlayerScriptableStorage = (PlayerScriptableStorage)target;
+					m_PlayerScriptableStorage = (RuntimeScriptableStorage)target;
 				}
 				return m_PlayerScriptableStorage;
 			}
@@ -91,8 +91,8 @@
 			get { return m_DefaultScriptableObjectProperty = m_DefaultScriptableObjectProperty ?? serializedObject.FindProperty("m_DefaultScriptableObject"); }
 		}
 
-		private SerializedProperty PlayerScriptableObjectProperty {
-			get { return m_PlayerScriptableObjectProperty = m_PlayerScriptableObjectProperty ?? serializedObject.FindProperty("m_PlayerScriptableObject"); }
+		private SerializedProperty RuntimeScriptableObjectProperty {
+			get { return m_RuntimeScriptableObjectProperty = m_RuntimeScriptableObjectProperty ?? serializedObject.FindProperty("m_RuntimeScriptableObject"); }
 		}
 
 		private SerializedProperty AssetsGUIDProperty {
@@ -135,14 +135,14 @@
 			{
 				GUILayoutOption buttonWidth = GUILayout.Width((EditorGUIUtility.currentViewWidth - 30) / 2);
 				EditorGUI.BeginDisabledGroup(!PlayerScriptableStorage.FileExists);
-				if (PlayerScriptableObjectProperty.objectReferenceValue == null) {
+				if (RuntimeScriptableObjectProperty.objectReferenceValue == null) {
 					if (GUILayout.Button("Load", buttonWidth)) {
 						// Make the internal field to be assigned by invoking the getter.
-						ScriptableObject playerScriptableObject = PlayerScriptableStorage.PlayerScriptableObject;
+						ScriptableObject playerScriptableObject = PlayerScriptableStorage.RuntimeScriptableObject;
 					}
 				} else {
 					if (GUILayout.Button("Unload", buttonWidth)) {
-						PlayerScriptableObjectProperty.objectReferenceValue = null;
+						RuntimeScriptableObjectProperty.objectReferenceValue = null;
 					}
 				}
 				if (GUILayout.Button("Delete")) {
@@ -167,14 +167,14 @@
 
 		private void DrawPlayerScriptableObject() {
 			EditorGUI.BeginDisabledGroup(true);
-			EditorGUILayout.PropertyField(PlayerScriptableObjectProperty);
+			EditorGUILayout.PropertyField(RuntimeScriptableObjectProperty);
 			EditorGUI.EndDisabledGroup();
 		}
 
 		private void DrawInspectButton() {
-			EditorGUI.BeginDisabledGroup((PlayerScriptableObjectProperty.objectReferenceValue == null));
+			EditorGUI.BeginDisabledGroup((RuntimeScriptableObjectProperty.objectReferenceValue == null));
 			if (GUILayout.Button("Inspect Player Scriptable Object")) {
-				Selection.activeObject = PlayerScriptableObjectProperty.objectReferenceValue;
+				Selection.activeObject = RuntimeScriptableObjectProperty.objectReferenceValue;
 			}
 			EditorGUI.EndDisabledGroup();
 		}

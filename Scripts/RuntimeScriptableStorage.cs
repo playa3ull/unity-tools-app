@@ -9,7 +9,7 @@
 	using UnityEngine;
 
 	/// <summary>
-	/// Stores player data from scriptable objects into disk.
+	/// Stores runtime data from scriptable objects into disk.
 	/// </summary>
 	/// 
 	/// <remarks>
@@ -18,8 +18,8 @@
 	/// and the changes can be saved in disk. If there is a file in disk, it creates 
 	/// a scriptable object with that data.
 	/// </remarks>
-	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Player Scriptable Storage")]
-	public class PlayerScriptableStorage : ScriptableObject {
+	[CreateAssetMenu(menuName = "Cocodrilo Dog/App/Runtime Scriptable Storage")]
+	public class RuntimeScriptableStorage : ScriptableObject {
 
 
 		#region Public Fields
@@ -42,10 +42,10 @@
 		}
 
 		/// <summary>
-		/// The player version of the scriptable object, either loaded from disk or
+		/// The runtime version of the scriptable object, either loaded from disk or
 		/// copied from the <see cref="DefaultScriptableObject"/>.
 		/// </summary>
-		public ScriptableObject PlayerScriptableObject {
+		public ScriptableObject RuntimeScriptableObject {
 			get {
 
 				if (DefaultScriptableObject == null) {
@@ -55,27 +55,27 @@
 				}
 
 				// Try to load it first
-				if (m_PlayerScriptableObject == null) {
-					m_PlayerScriptableObject = Load(DefaultScriptableObject.GetType());
-					if (m_PlayerScriptableObject != null) {
-						m_PlayerScriptableObject.name = PlayerScriptableObjectName;
+				if (m_RuntimeScriptableObject == null) {
+					m_RuntimeScriptableObject = Load(DefaultScriptableObject.GetType());
+					if (m_RuntimeScriptableObject != null) {
+						m_RuntimeScriptableObject.name = RuntimeScriptableObjectName;
 					}
 				}
 
 				// If file doesn't exist, then create a clone of the default scriptable object.
-				if (m_PlayerScriptableObject == null) {
-					m_PlayerScriptableObject = Instantiate(DefaultScriptableObject);
+				if (m_RuntimeScriptableObject == null) {
+					m_RuntimeScriptableObject = Instantiate(DefaultScriptableObject);
 				}
 
-				return m_PlayerScriptableObject;
+				return m_RuntimeScriptableObject;
 
 			}
-			private set { m_PlayerScriptableObject = value; }
+			private set { m_RuntimeScriptableObject = value; }
 		}
 
 		/// <summary>
 		/// The <see cref="ScriptableObject"/> that is a starting point for the data
-		/// that will be modified and then saved into disk.
+		/// that will be modified at runtime and then saved into disk.
 		/// </summary>
 		private ScriptableObject DefaultScriptableObject {
 			get { return m_DefaultScriptableObject; }
@@ -95,13 +95,13 @@
 		#region Public Methods
 
 		/// <summary>
-		/// Gets the <see cref="PlayerScriptableObject"/> of the <typeparamref name="T"/> type.
+		/// Gets the <see cref="RuntimeScriptableObject"/> of the <typeparamref name="T"/> type.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns>
-		/// The <see cref="PlayerScriptableObject"/> of the <typeparamref name="T"/> type.
+		/// The <see cref="RuntimeScriptableObject"/> of the <typeparamref name="T"/> type.
 		/// </returns>
-		public T GetPlayerScriptableObject<T>() where T: ScriptableObject {
+		public T GetRuntimeScriptableObject<T>() where T: ScriptableObject {
 
 			if (DefaultScriptableObject == null) {
 				throw new InvalidOperationException(
@@ -110,24 +110,24 @@
 			}
 
 			// Try to load it first
-			if (m_PlayerScriptableObject == null) {
-				m_PlayerScriptableObject = Load<T>();
-				if (m_PlayerScriptableObject != null) {
-					m_PlayerScriptableObject.name = PlayerScriptableObjectName;
+			if (m_RuntimeScriptableObject == null) {
+				m_RuntimeScriptableObject = Load<T>();
+				if (m_RuntimeScriptableObject != null) {
+					m_RuntimeScriptableObject.name = RuntimeScriptableObjectName;
 				}
 			} 
 
 			// If file doesn't exist, then create a clone of the default scriptable object.
-			if (m_PlayerScriptableObject == null) {
-				m_PlayerScriptableObject = Instantiate(DefaultScriptableObject);
+			if (m_RuntimeScriptableObject == null) {
+				m_RuntimeScriptableObject = Instantiate(DefaultScriptableObject);
 			}
 
-			return m_PlayerScriptableObject as T;
+			return m_RuntimeScriptableObject as T;
 
 		}
 
 		/// <summary>
-		/// Saves the <see cref="PlayerScriptableObject"/> in its current state in the
+		/// Saves the <see cref="RuntimeScriptableObject"/> in its current state in the
 		/// specified <see cref="FilePath"/>.
 		/// </summary>
 		public void Save() {
@@ -136,18 +136,18 @@
 					string.Format("{0} can not be null", nameof(DefaultScriptableObject))
 				);
 			}
-			Save(PlayerScriptableObject, CrossPlatformFilePath);
+			Save(RuntimeScriptableObject, CrossPlatformFilePath);
 		}
 
 		/// <summary>
 		/// Deletes the file at <see cref="FilePath"/>, if any.
 		/// </summary>
 		public void Delete() {
-			if (PlayerScriptableObject != null) {
+			if (RuntimeScriptableObject != null) {
 				if(Application.isPlaying) {
-					Destroy(PlayerScriptableObject);
+					Destroy(RuntimeScriptableObject);
 				}
-				PlayerScriptableObject = null;
+				RuntimeScriptableObject = null;
 			}
 			string fullPath = Path.Combine(Application.persistentDataPath, FilePath);
 			if (File.Exists(fullPath)) {
@@ -167,7 +167,7 @@
 		private AssetsGUID m_AssetsGUID;
 		
 		[SerializeField]
-		private ScriptableObject m_PlayerScriptableObject;
+		private ScriptableObject m_RuntimeScriptableObject;
 
 		#endregion
 
@@ -192,7 +192,7 @@
 			}
 		}
 
-		private string PlayerScriptableObjectName { 
+		private string RuntimeScriptableObjectName { 
 			get { return string.Format("{0} (From file)", DefaultScriptableObject.name); } 
 		}
 
@@ -214,13 +214,13 @@
 			return null;
 		}
 
-		private void Save(ScriptableObject playerScriptableObject, string path) {
+		private void Save(ScriptableObject runtimeScriptableObject, string path) {
 
 			// Create the directory if it doesn't exists
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 
 			// Save the data
-			JSON json = JSON.Serialize(playerScriptableObject, AssetsGUID);
+			JSON json = JSON.Serialize(runtimeScriptableObject, AssetsGUID);
 			File.WriteAllText(path, json.CreatePrettyString());
 
 		}
