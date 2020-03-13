@@ -120,7 +120,7 @@
 
 		protected override void OnDestroy() {
 			base.OnDestroy();
-			Animate.ClearMotions(this);
+			Animate.ClearPlaybacks(this);
 		}
 
 		#endregion
@@ -217,11 +217,11 @@
 
 		private void ShowUI(bool animated, Action onComplete = null) {
 			UIController.gameObject.SetActive(true);
-			if(animated) {
+			if (animated) {
 				UIController.OnFadeIn(FadeInTime);
 				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
 					.SetEasing(AnimateEasing.QuadInOut)
-					.SetOnComplete(() => { onComplete?.Invoke();})
+					.SetOnComplete(() => { onComplete?.Invoke(); })
 					.Play(0, 1, FadeInTime);
 			} else {
 				UIController.CanvasGroup.alpha = 1;
