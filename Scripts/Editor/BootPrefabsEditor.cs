@@ -15,6 +15,10 @@
 	/// to simulate a runtime state with the boot objects in place without needing
 	/// to run the boot scene first.
 	/// </summary>
+	///
+	/// <remarks>
+	///	A <see cref="BootPrefabs"/> asset must be located in a Resources folder.
+	/// </remarks>
 	[CustomEditor(typeof(BootPrefabs))]
 	public class BootPrefabsEditor : Editor {
 
