@@ -10,7 +10,14 @@
 
 		#region Public Fields
 
+		[SerializeField]
 		public string DefaultSceneName;
+
+		[SerializeField]
+		public LoadSceneMode LoadSceneMode;
+
+		[SerializeField]
+		public bool AutoActivate = true;
 
 		#endregion
 
@@ -18,7 +25,7 @@
 		#region Unity Methods
 
 		private void Start() {
-			SceneLoader.LoadScene(DefaultSceneName, LoadSceneMode.Single);
+			SceneLoader.LoadScene(DefaultSceneName, LoadSceneMode, AutoActivate);
 		}
 
 		#endregion
