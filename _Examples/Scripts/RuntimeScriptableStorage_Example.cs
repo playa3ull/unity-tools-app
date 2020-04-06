@@ -7,13 +7,13 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 
-	public class PlayerScriptableStorage_Example : MonoBehaviour {
+	public class RuntimeScriptableStorage_Example : MonoBehaviour {
 
 
 		[Header("References")]
 
 		[SerializeField]
-		public RuntimeScriptableStorage PlayerScriptableStorage;
+		public RuntimeScriptableStorage RuntimeScriptableStorage;
 
 
 		#region Unity Methods
@@ -71,12 +71,12 @@
 		}
 
 		private void SaveButton_onClick() {
-			PlayerScriptableStorage.Save();
+			RuntimeScriptableStorage.Save();
 		}
 
 		private void DeleteButton_onClick() {
 			RemoveAllSubobjectTexts();
-			PlayerScriptableStorage.Delete();
+			RuntimeScriptableStorage.Delete();
 			StartCoroutine(AddAllSubobjectTextsAfterFrame());
 		}
 
@@ -150,7 +150,7 @@
 		private ExampleScriptableObject PlayerScriptableObject {
 			get {
 				if (m_PlayerScriptableObject == null) {
-					m_PlayerScriptableObject = PlayerScriptableStorage.GetRuntimeScriptableObject<ExampleScriptableObject>();
+					m_PlayerScriptableObject = RuntimeScriptableStorage.GetRuntimeScriptableObject<ExampleScriptableObject>();
 				}
 				return m_PlayerScriptableObject;
 			}
