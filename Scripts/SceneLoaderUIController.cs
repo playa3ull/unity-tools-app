@@ -5,6 +5,9 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 
+	/// <summary>
+	/// Implementation of <see cref="AbstractSceneLoaderUIController"/>
+	/// </summary>
 	public class SceneLoaderUIController : AbstractSceneLoaderUIController {
 
 
@@ -53,6 +56,8 @@
 
 
 		#region Private Fields
+
+		[Header("Subcomponents")]
 
 		[SerializeField]
 		private CanvasGroup m_CanvasGroup;
