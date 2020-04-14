@@ -143,15 +143,15 @@
 		/// Deletes the file at <see cref="FilePath"/>, if any.
 		/// </summary>
 		public void Delete() {
+			string fullPath = Path.Combine(Application.persistentDataPath, FilePath);
+			if (File.Exists(fullPath)) {
+				File.Delete(fullPath);
+			}
 			if (RuntimeScriptableObject != null) {
 				if(Application.isPlaying) {
 					Destroy(RuntimeScriptableObject);
 				}
 				RuntimeScriptableObject = null;
-			}
-			string fullPath = Path.Combine(Application.persistentDataPath, FilePath);
-			if (File.Exists(fullPath)) {
-				File.Delete(fullPath);
 			}
 		}
 

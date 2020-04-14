@@ -53,7 +53,7 @@
 
 		#region Private Fields
 
-		private RuntimeScriptableStorage m_PlayerScriptableStorage;
+		private RuntimeScriptableStorage m_RuntimeScriptableStorage;
 
 		private SerializedProperty m_ScriptProperty;
 
@@ -70,12 +70,12 @@
 
 		#region Private Properties
 
-		private RuntimeScriptableStorage PlayerScriptableStorage {
+		private RuntimeScriptableStorage RuntimeScriptableStorage {
 			get {
-				if(m_PlayerScriptableStorage == null) {
-					m_PlayerScriptableStorage = (RuntimeScriptableStorage)target;
+				if(m_RuntimeScriptableStorage == null) {
+					m_RuntimeScriptableStorage = (RuntimeScriptableStorage)target;
 				}
-				return m_PlayerScriptableStorage;
+				return m_RuntimeScriptableStorage;
 			}
 		}
 
@@ -117,11 +117,11 @@
 		}
 
 		private void DrawFileHelpBox() {
-			if (PlayerScriptableStorage.FileExists) {
+			if (RuntimeScriptableStorage.FileExists) {
 				EditorGUILayout.HelpBox(
 					string.Format(
 						"File \"{0}\" exists in the specified FilePath.", 
-						Path.GetFileName(PlayerScriptableStorage.FilePath)
+						Path.GetFileName(RuntimeScriptableStorage.FilePath)
 					),
 					MessageType.Info
 				);
@@ -134,11 +134,11 @@
 			GUILayout.BeginHorizontal();
 			{
 				GUILayoutOption buttonWidth = GUILayout.Width((EditorGUIUtility.currentViewWidth - 30) / 2);
-				EditorGUI.BeginDisabledGroup(!PlayerScriptableStorage.FileExists);
+				EditorGUI.BeginDisabledGroup(!RuntimeScriptableStorage.FileExists);
 				if (RuntimeScriptableObjectProperty.objectReferenceValue == null) {
 					if (GUILayout.Button("Load", buttonWidth)) {
 						// Make the internal field to be assigned by invoking the getter.
-						ScriptableObject playerScriptableObject = PlayerScriptableStorage.RuntimeScriptableObject;
+						ScriptableObject playerScriptableObject = RuntimeScriptableStorage.RuntimeScriptableObject;
 					}
 				} else {
 					if (GUILayout.Button("Unload", buttonWidth)) {
@@ -157,7 +157,7 @@
 						"Delete",
 						"Cancel"
 					)) {
-						PlayerScriptableStorage.Delete();
+						RuntimeScriptableStorage.Delete();
 					}
 				}
 				EditorGUI.EndDisabledGroup();
