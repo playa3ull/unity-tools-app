@@ -37,7 +37,7 @@
 
 			base.OnGUI(position, property, label);
 
-			EditorGUI.BeginProperty(Position, Label, Property);
+			Label = EditorGUI.BeginProperty(Position, Label, Property);
 			Property.isExpanded = EditorGUI.Foldout(GetNextPosition(), Property.isExpanded, Label);
 
 			if (Property.isExpanded) {
