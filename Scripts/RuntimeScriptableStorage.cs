@@ -56,6 +56,7 @@
 
 				// Try to load it first
 				if (m_RuntimeScriptableObject == null) {
+					// TODO: Handle the case where the loaded file can not be read.
 					m_RuntimeScriptableObject = Load(DefaultScriptableObject.GetType());
 					if (m_RuntimeScriptableObject != null) {
 						m_RuntimeScriptableObject.name = RuntimeScriptableObjectName;
