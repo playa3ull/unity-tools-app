@@ -173,7 +173,7 @@
 
 		private void DrawInspectButton() {
 			EditorGUI.BeginDisabledGroup((RuntimeScriptableObjectProperty.objectReferenceValue == null));
-			if (GUILayout.Button("Inspect Player Scriptable Object")) {
+			if (GUILayout.Button("Inspect Runtime Scriptable Object")) {
 				Selection.activeObject = RuntimeScriptableObjectProperty.objectReferenceValue;
 			}
 			EditorGUI.EndDisabledGroup();
