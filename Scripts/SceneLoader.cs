@@ -22,10 +22,12 @@
 		#region Public Static Methods
 
 		/// <summary>
-		/// Load a scene.
+		/// Loads a scene.
 		/// </summary>
+		/// 
 		/// <param name="sceneName">The name of the scene</param>
 		/// <param name="loadSceneMode">The <see cref="LoadSceneMode"/></param>
+		/// 
 		/// <param name="autoActivate">
 		/// Will the scene activate immediatly after it loads? If false, a call
 		/// to <see cref="ActivateScene"/> is required to activate the scene.
@@ -34,6 +36,41 @@
 			if (Instance != null) {
 				Instance._LoadScene(sceneName, loadSceneMode, autoActivate);
 			}
+		}
+
+		/// <summary>
+		/// Loads a scene with the option of performing an action just before loading the
+		/// new scene (after the scene loader has faded-in).
+		/// </summary>
+		/// 
+		/// <param name="sceneName">The name of the scene</param>
+		/// <param name="loadSceneMode">The <see cref="LoadSceneMode"/></param>
+		/// 
+		/// <param name="beforeLoadAction">
+		/// Any action to be performed just before start the loading of the new scene
+		/// (after the scene loader has faded-in).
+		/// </param>
+		/// 
+		/// <param name="beforeLoadWaitForSeconds">
+		/// After performing the <paramref name="beforeLoadAction"/>, it will wait
+		/// this time before loading the new scene.
+		/// </param>
+		/// 
+		/// <param name="autoActivate">
+		/// Will the scene activate immediatly after it loads? If false, a call
+		/// to <see cref="ActivateScene"/> is required to activate the scene.
+		/// </param>
+		public static void LoadScene(
+			string sceneName,
+			LoadSceneMode loadSceneMode,
+			Action beforeLoadAction,
+			float beforeLoadWaitForSeconds = 0,
+			bool autoActivate = true) {
+
+			if (Instance != null) {
+				Instance._LoadScene(sceneName, loadSceneMode, beforeLoadAction, beforeLoadWaitForSeconds, autoActivate);
+			}
+
 		}
 
 		/// <summary>
@@ -164,9 +201,35 @@
 		#region Private Methods - Loading
 
 		private void _LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
-			// Reset to before the fade in so that no progress bars are shown filled
+			// Reset before the fade in so that no progress bars are shown filled
 			UIController.OnLoadProgress(0);
 			ShowUI(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
+		}
+
+		private void _LoadScene(
+			string sceneName,
+			LoadSceneMode loadSceneMode,
+			Action beforeLoadAction,
+			float beforeLoadWaitForSeconds = 0,
+			bool autoActivate = true
+		) {
+
+			// Reset before the fade in so that no progress bars are shown filled
+			UIController.OnLoadProgress(0);
+
+			ShowUI(true, () => {
+				// Perform the action
+				beforeLoadAction?.Invoke();
+				if(Mathf.Approximately(beforeLoadWaitForSeconds, 0)) {
+					// Loads the new scene immediatly
+					LoadSceneAsync(sceneName, loadSceneMode, autoActivate);
+				} else {
+					// Wait some time before loading the new scene
+					Animate.GetTimer().Play(beforeLoadWaitForSeconds)
+						.SetOnComplete(() => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
+				}
+			});
+
 		}
 
 		private void _ActivateScene() {
