@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9fdc51dec40a49efb9a138cceba8816, type: 3}
-  m_Name: ExampleBootPrefabs
+  m_Name: BootPrefabs_Example
   m_EditorClassIdentifier: 
   m_Prefabs:
   - {fileID: 5086928110899891034, guid: 907ad4f9895b94dfd8941e9bfacd27da, type: 3}
