@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 96d531ce3a17e46429c3e0f9217a2518, type: 3}
-  m_Name: ExampleAudioClipsGUID
+  m_Name: AudioClipsGUID_Example
   m_EditorClassIdentifier: 
   m_AssetReferences:
   - Asset: {fileID: 8300000, guid: dd4dbd9d3027e48189e12a64437297ef, type: 3}
