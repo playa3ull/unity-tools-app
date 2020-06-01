@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Prefabs:
   - {fileID: 5086928110899891034, guid: 907ad4f9895b94dfd8941e9bfacd27da, type: 3}
-  - {fileID: 1867770725405029104, guid: 21dd983e701084bd08415ad3336cbd66, type: 3}
+  - {fileID: 1867770725405029104, guid: 43a1275eccc624470a13432274319548, type: 3}
   - {fileID: 7348244804412677562, guid: ffab7f073cc724a9cb94e0543ca8c190, type: 3}
   m_BootOnlyOnSpecificScenes: 1
   m_SpecificScenes:

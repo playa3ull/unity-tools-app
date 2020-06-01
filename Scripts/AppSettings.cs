@@ -13,6 +13,9 @@
 		[SerializeField]
 		public int TargetFrameRate = 60;
 
+		[SerializeField]
+		public Vector2Int ScreenResolution = new Vector2Int(1920, 1080);
+
 		#endregion
 
 
@@ -25,6 +28,7 @@
 
 		private void Start() {
 			Application.targetFrameRate = TargetFrameRate;
+			//Screen.SetResolution(ScreenResolution.x, ScreenResolution.y, Screen.fullScreen);
 		}
 
 		#endregion
