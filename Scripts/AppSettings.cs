@@ -14,7 +14,7 @@
 		public int TargetFrameRate = 60;
 
 		[SerializeField]
-		public Vector2Int ScreenResolution = new Vector2Int(1920, 1080);
+		public bool HalveRetina = true;
 
 		#endregion
 
@@ -27,8 +27,25 @@
 		}
 
 		private void Start() {
+
 			Application.targetFrameRate = TargetFrameRate;
-			//Screen.SetResolution(ScreenResolution.x, ScreenResolution.y, Screen.fullScreen);
+
+			// TODO: This should be the default behavior, but once the user has chosen
+			// a resolution, this code should be executed
+			if (HalveRetina) {
+				Resolution highestResolution = Screen.resolutions[Screen.resolutions.Length - 1];
+				if (Screen.dpi > 200) { // Is retina (221)
+					if (Screen.currentResolution.width == highestResolution.width &&
+						Screen.currentResolution.height == highestResolution.height) {
+						Screen.SetResolution(
+							highestResolution.width / 2,
+							highestResolution.height / 2,
+							Screen.fullScreen
+						);
+					}
+				}
+			}
+
 		}
 
 		#endregion
