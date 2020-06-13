@@ -29,7 +29,7 @@
 		/// <param name="loadSceneMode">The <see cref="LoadSceneMode"/></param>
 		/// 
 		/// <param name="autoActivate">
-		/// Will the scene activate immediatly after it loads? If false, a call
+		/// Will the scene activate immediately after it loads? If false, a call
 		/// to <see cref="ActivateScene"/> is required to activate the scene.
 		/// </param>
 		public static void LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
@@ -57,7 +57,7 @@
 		/// </param>
 		/// 
 		/// <param name="autoActivate">
-		/// Will the scene activate immediatly after it loads? If false, a call
+		/// Will the scene activate immediately after it loads? If false, a call
 		/// to <see cref="ActivateScene"/> is required to activate the scene.
 		/// </param>
 		public static void LoadScene(
@@ -221,7 +221,7 @@
 				// Perform the action
 				beforeLoadAction?.Invoke();
 				if(Mathf.Approximately(beforeLoadWaitForSeconds, 0)) {
-					// Loads the new scene immediatly
+					// Loads the new scene immediately
 					LoadSceneAsync(sceneName, loadSceneMode, autoActivate);
 				} else {
 					// Wait some time before loading the new scene
