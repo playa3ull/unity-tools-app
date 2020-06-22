@@ -283,6 +283,7 @@
 			if (animated) {
 				UIController.OnFadeIn(FadeInTime);
 				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
+					.SetTimeMode(TimeMode.Unscaled)
 					.SetEasing(AnimateEasing.QuadInOut)
 					.SetOnComplete(() => { onComplete?.Invoke(); })
 					.Play(0, 1, FadeInTime);
@@ -296,6 +297,7 @@
 			if (animated) {
 				UIController.OnFadeOut(FadeOutTime);
 				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
+					.SetTimeMode(TimeMode.Unscaled)
 					.SetEasing(AnimateEasing.QuadInOut)
 					.SetOnComplete(() => UIController.gameObject.SetActive(false))
 					.Play(1, 0, FadeOutTime);
