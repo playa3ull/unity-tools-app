@@ -129,6 +129,7 @@
 		protected override void Awake() {
 			base.Awake();
 			DontDestroyOnLoad(gameObject);
+			DisableCanvases();
 			HideUI(false);
 		}
 
@@ -190,10 +191,27 @@
 		#region Private Fields - Non Serialized
 
 		[NonSerialized]
+		private Canvas[] m_Canvases;
+
+		[NonSerialized]
 		private AsyncOperation m_AsyncOperation;
 
 		[NonSerialized]
 		private bool m_IsSceneLoaded;
+
+		#endregion
+
+
+		#region Private Fields - Non Serialized
+
+		private Canvas[] Canvases {
+			get {
+				if(m_Canvases == null) {
+					m_Canvases = GetComponentsInChildren<Canvas>();
+				}
+				return m_Canvases;
+			}
+		}
 
 		#endregion
 
@@ -203,6 +221,7 @@
 		private void _LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
 			// Reset before the fade in so that no progress bars are shown filled
 			UIController.OnLoadProgress(0);
+			EnableCanvases();
 			ShowUI(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
 		}
 
@@ -216,7 +235,7 @@
 
 			// Reset before the fade in so that no progress bars are shown filled
 			UIController.OnLoadProgress(0);
-
+			EnableCanvases();
 			ShowUI(true, () => {
 				// Perform the action
 				beforeLoadAction?.Invoke();
@@ -278,6 +297,18 @@
 
 		#region Private Methods - UI
 
+		private void EnableCanvases() {
+			foreach (Canvas canvas in Canvases) {
+				canvas.enabled = true;
+			}
+		}
+
+		private void DisableCanvases() {
+			foreach (Canvas canvas in Canvases) {
+				canvas.enabled = false;
+			}
+		}
+
 		private void ShowUI(bool animated, Action onComplete = null) {
 			UIController.gameObject.SetActive(true);
 			if (animated) {
@@ -285,7 +316,7 @@
 				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
 					.SetTimeMode(TimeMode.Unscaled)
 					.SetEasing(AnimateEasing.QuadInOut)
-					.SetOnComplete(() => { onComplete?.Invoke(); })
+					.SetOnComplete(() => onComplete?.Invoke())
 					.Play(0, 1, FadeInTime);
 			} else {
 				UIController.CanvasGroup.alpha = 1;
@@ -293,13 +324,16 @@
 			}
 		}
 
-		private void HideUI(bool animated) {
+		private void HideUI(bool animated, Action onComplete = null) {
 			if (animated) {
 				UIController.OnFadeOut(FadeOutTime);
 				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
 					.SetTimeMode(TimeMode.Unscaled)
 					.SetEasing(AnimateEasing.QuadInOut)
-					.SetOnComplete(() => UIController.gameObject.SetActive(false))
+					.SetOnComplete(() => {
+						UIController.gameObject.SetActive(false);
+						DisableCanvases();
+					})
 					.Play(1, 0, FadeOutTime);
 			} else {
 				UIController.CanvasGroup.alpha = 0;
