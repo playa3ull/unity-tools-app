@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AssetReferences:
   - Asset: {fileID: 8300000, guid: dd4dbd9d3027e48189e12a64437297ef, type: 3}
-    GUID: dd4dbd9d3027e48189e12a64437297ef
+    GUID: 
   - Asset: {fileID: 8300000, guid: e556976bc429b441eaa5ce5c52caaf64, type: 3}
     GUID: e556976bc429b441eaa5ce5c52caaf64
   - Asset: {fileID: 8300000, guid: fe8d89cf5003c47a987b3539a7390b22, type: 3}
