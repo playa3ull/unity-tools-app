@@ -23,6 +23,7 @@
 		public override void OnInspectorGUI() {
 			serializedObject.Update();
 			DrawScript();
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("TotalJ"));
 			EditorGUILayout.PropertyField(FilePathProperty); 
 			EditorGUILayout.PropertyField(DefaultScriptableObjectProperty);
 			EditorGUILayout.PropertyField(AssetsGUIDProperty);

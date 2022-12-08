@@ -24,7 +24,6 @@
 			RemoveObjectButton.onClick.AddListener(RemoveObjectButton_onClick);
 			SaveButton.onClick.AddListener(SaveButton_onClick);
 			DeleteButton.onClick.AddListener(DeleteButton_onClick);
-			PlayAudioButton.onClick.AddListener(PlayAudioButton_onClick);
 		}
 
 		private void Start() {
@@ -41,7 +40,6 @@
 			RemoveObjectButton.onClick.RemoveListener(RemoveObjectButton_onClick);
 			SaveButton.onClick.RemoveListener(SaveButton_onClick);
 			DeleteButton.onClick.RemoveListener(DeleteButton_onClick);
-			PlayAudioButton.onClick.RemoveListener(PlayAudioButton_onClick);
 		}
 
 		#endregion
@@ -54,7 +52,7 @@
 		}
 
 		private void AddObjectButton_onClick() {
-			ExampleScriptableObject subobject = new ExampleScriptableObject();
+			ExampleScriptableObject subobject = ScriptableObject.CreateInstance<ExampleScriptableObject>();
 			subobject.SomeField = string.Format(
 				"Subobject {0}", 
 				PlayerScriptableObject.SubScriptableObjectsList.Count
@@ -78,10 +76,6 @@
 			RemoveAllSubobjectTexts();
 			RuntimeScriptableStorage.Delete();
 			StartCoroutine(AddAllSubobjectTextsAfterFrame());
-		}
-
-		private void PlayAudioButton_onClick() {
-			AudioSource.PlayOneShot(PlayerScriptableObject.AudioClip);
 		}
 
 		#endregion

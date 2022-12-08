@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SubScriptableObject0
   m_EditorClassIdentifier: 
   m_SubScriptableObjectsList: []
-  AudioClip: {fileID: 8300000, guid: fe8d89cf5003c47a987b3539a7390b22, type: 3}
+  Zola: 0
   SomeField: Subobject 0

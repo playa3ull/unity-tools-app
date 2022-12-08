@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44a612d50d17a4be28aad47615506d3b, type: 3}
   m_Name: ExampleRuntimeScriptableStorage
   m_EditorClassIdentifier: 
-  FilePath: Folder/Subfolder/File.json
-  m_DefaultScriptableObject: {fileID: 11400000, guid: ed5564a2d993b4efa9baaa9608b1d8b6,
-    type: 2}
+  FilePath: Folder/Subfolder/FileExample.json
+  TotalJ: 0
+  m_DefaultScriptableObject: {fileID: 11400000, guid: ed5564a2d993b4efa9baaa9608b1d8b6, type: 2}
   m_AssetsGUID: {fileID: 11400000, guid: d839bb1f9f951412280bcdc2f9c6a5af, type: 2}
   m_RuntimeScriptableObject: {fileID: 0}

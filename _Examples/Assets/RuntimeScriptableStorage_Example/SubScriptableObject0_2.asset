@@ -10,10 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a9f7b49247fa84824b4f69d2e9307139, type: 3}
-  m_Name: SubScriptableObject1
+  m_Name: SubScriptableObject0_2
   m_EditorClassIdentifier: 
-  m_SubScriptableObjectsList:
-  - {fileID: 11400000, guid: ae1ff9e1b442a6a45a5b7150a3a9ad30, type: 2}
-  - {fileID: 11400000, guid: 1b6d65d082cee7641b1a7ae28c116dfb, type: 2}
+  m_SubScriptableObjectsList: []
   Zola: 0
-  SomeField: Subobject 1
+  SomeField: Subobject 0

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: AudioClipsGUID_Example
   m_EditorClassIdentifier: 
   m_AssetReferences:
-  - Asset: {fileID: 8300000, guid: dd4dbd9d3027e48189e12a64437297ef, type: 3}
-    GUID: 
-  - Asset: {fileID: 8300000, guid: e556976bc429b441eaa5ce5c52caaf64, type: 3}
-    GUID: e556976bc429b441eaa5ce5c52caaf64
-  - Asset: {fileID: 8300000, guid: fe8d89cf5003c47a987b3539a7390b22, type: 3}
-    GUID: fe8d89cf5003c47a987b3539a7390b22
+  - Asset: {fileID: 8300000, guid: f50c8b443c786ef4e96760a7044c820d, type: 3}
+    GUID: f50c8b443c786ef4e96760a7044c820d
+  - Asset: {fileID: 8300000, guid: 7bdab546a8bfdec4898e9abed6909a11, type: 3}
+    GUID: 7bdab546a8bfdec4898e9abed6909a11
+  - Asset: {fileID: 8300000, guid: 374be9c32c464a04494871a5e5f53d25, type: 3}
+    GUID: 374be9c32c464a04494871a5e5f53d25

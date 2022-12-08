@@ -1,6 +1,7 @@
 ﻿namespace CocodriloDog.App {
 
-	using Leguar.TotalJSON;
+	//using Leguar.TotalJSON;
+	using CocodriloDog.CD_JSON;
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
@@ -37,9 +38,7 @@
 		/// <summary>
 		/// Is there a stored file?
 		/// </summary>
-		public bool FileExists {
-			get { return File.Exists(CrossPlatformFilePath); }
-		}
+		public bool FileExists => File.Exists(CrossPlatformFilePath);
 
 		/// <summary>
 		/// The runtime version of the scriptable object, either loaded from disk or
@@ -78,17 +77,13 @@
 		/// The <see cref="ScriptableObject"/> that is a starting point for the data
 		/// that will be modified at runtime and then saved into disk.
 		/// </summary>
-		private ScriptableObject DefaultScriptableObject {
-			get { return m_DefaultScriptableObject; }
-		}
+		private ScriptableObject DefaultScriptableObject => m_DefaultScriptableObject;
 
 		/// <summary>
 		/// An optional <see cref="App.AssetsGUID"/> that must be provided when references to
 		/// assets such as <see cref="AudioClip"/> will be saved in the data file.
 		/// </summary>
-		public AssetsGUID AssetsGUID {
-			get { return m_AssetsGUID; }
-		}
+		public AssetsGUID AssetsGUID => m_AssetsGUID;
 
 		#endregion
 
@@ -193,24 +188,19 @@
 			}
 		}
 
-		private string RuntimeScriptableObjectName { 
-			get { return string.Format("{0} (From file)", DefaultScriptableObject.name); } 
-		}
+		private string RuntimeScriptableObjectName => string.Format("{0} (From file)", DefaultScriptableObject.name);
 
 		#endregion
 
 
 		#region Private Methods
 
-		private T Load<T>() where T : ScriptableObject {
-			return Load(typeof(T)) as T;
-		}
+		private T Load<T>() where T : ScriptableObject => Load(typeof(T)) as T;
 
 		private ScriptableObject Load(Type type) {
 			if (File.Exists(CrossPlatformFilePath)) {
 				string jsonString = File.ReadAllText(CrossPlatformFilePath);
-				JSON json = JSON.ParseString(jsonString);
-				return (ScriptableObject)json.Deserialize(type, AssetsGUID);
+				return CD_JSON.Deserialize(type, jsonString) as ScriptableObject;
 			}
 			return null;
 		}
@@ -221,8 +211,8 @@
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 
 			// Save the data
-			JSON json = JSON.Serialize(runtimeScriptableObject, AssetsGUID);
-			File.WriteAllText(path, json.CreatePrettyString());
+			var serialized = CD_JSON.Serialize(runtimeScriptableObject);
+			File.WriteAllText(path, serialized);
 
 		}
 

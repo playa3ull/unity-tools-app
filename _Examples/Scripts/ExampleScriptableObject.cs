@@ -12,9 +12,6 @@
 		#region Public Fields
 
 		[SerializeField]
-		public AudioClip AudioClip;
-
-		[SerializeField]
 		public string SomeField;
 
 		#endregion
