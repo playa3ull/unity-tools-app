@@ -25,7 +25,6 @@
 			DrawScript();
 			EditorGUILayout.PropertyField(FilePathProperty); 
 			EditorGUILayout.PropertyField(DefaultScriptableObjectProperty);
-			EditorGUILayout.PropertyField(AssetsGUIDProperty);
 			DrawScriptableObjectHelpBox();
 			DrawFileHelpBox();
 			DrawLoadUnloadButtons();

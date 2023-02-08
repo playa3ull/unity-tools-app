@@ -79,12 +79,6 @@
 		/// </summary>
 		private ScriptableObject DefaultScriptableObject => m_DefaultScriptableObject;
 
-		/// <summary>
-		/// An optional <see cref="App.AssetsGUID"/> that must be provided when references to
-		/// assets such as <see cref="AudioClip"/> will be saved in the data file.
-		/// </summary>
-		public AssetsGUID AssetsGUID => m_AssetsGUID;
-
 		#endregion
 
 
@@ -158,9 +152,6 @@
 
 		[SerializeField]
 		private ScriptableObject m_DefaultScriptableObject;
-
-		[SerializeField]
-		private AssetsGUID m_AssetsGUID;
 		
 		[SerializeField]
 		private ScriptableObject m_RuntimeScriptableObject;
