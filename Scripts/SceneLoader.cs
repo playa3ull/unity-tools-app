@@ -12,6 +12,7 @@
 	/// <summary>
 	/// A singleton that can load scenes asynchronously and display the load progress.
 	/// </summary>
+	/// 
 	/// <remarks>
 	/// In needs a reference to a <see cref="AbstractSceneLoaderUIController"/> in order to display
 	/// the download progress.
@@ -51,7 +52,7 @@
 		/// (after the scene loader has faded-in).
 		/// </param>
 		/// 
-		/// <param name="beforeLoadWaitForSeconds">
+		/// <param name="waitForSecondsToLoad">
 		/// After performing the <paramref name="beforeLoadAction"/>, it will wait
 		/// this time before loading the new scene.
 		/// </param>
@@ -64,11 +65,11 @@
 			string sceneName,
 			LoadSceneMode loadSceneMode,
 			Action beforeLoadAction,
-			float beforeLoadWaitForSeconds = 0,
+			float waitForSecondsToLoad = 0,
 			bool autoActivate = true) {
 
 			if (Instance != null) {
-				Instance._LoadScene(sceneName, loadSceneMode, beforeLoadAction, beforeLoadWaitForSeconds, autoActivate);
+				Instance._LoadScene(sceneName, loadSceneMode, beforeLoadAction, waitForSecondsToLoad, autoActivate);
 			}
 
 		}
@@ -229,7 +230,7 @@
 			string sceneName,
 			LoadSceneMode loadSceneMode,
 			Action beforeLoadAction,
-			float beforeLoadWaitForSeconds = 0,
+			float waitForSecondsToLoad = 0,
 			bool autoActivate = true
 		) {
 
@@ -239,12 +240,12 @@
 			ShowUI(true, () => {
 				// Perform the action
 				beforeLoadAction?.Invoke();
-				if(Mathf.Approximately(beforeLoadWaitForSeconds, 0)) {
+				if(Mathf.Approximately(waitForSecondsToLoad, 0)) {
 					// Loads the new scene immediately
 					LoadSceneAsync(sceneName, loadSceneMode, autoActivate);
 				} else {
 					// Wait some time before loading the new scene
-					Animate.GetTimer().Play(beforeLoadWaitForSeconds)
+					Animate.GetTimer().Play(waitForSecondsToLoad)
 						.SetOnComplete(() => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
 				}
 			});
