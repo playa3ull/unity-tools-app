@@ -33,9 +33,14 @@
 		/// Will the scene activate immediately after it loads? If false, a call
 		/// to <see cref="ActivateScene"/> is required to activate the scene.
 		/// </param>
-		public static void LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
+		/// 
+		///	<param name="autoHideUI">
+		/// Will the scene hide immediately after it loads? If false, a call
+		/// to <see cref="HideUI(bool, Action)"/> is required to hide the scene.
+		/// </param>
+		public static void LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true, bool autoHideUI = true) {
 			if (Instance != null) {
-				Instance._LoadScene(sceneName, loadSceneMode, autoActivate);
+				Instance._LoadScene(sceneName, loadSceneMode, autoActivate, autoHideUI);
 			}
 		}
 
@@ -61,15 +66,21 @@
 		/// Will the scene activate immediately after it loads? If false, a call
 		/// to <see cref="ActivateScene"/> is required to activate the scene.
 		/// </param>
+		/// 
+		///	<param name="autoHideUI">
+		/// Will the scene hide immediately after it loads? If false, a call
+		/// to <see cref="HideUI(bool, Action)"/> is required to hide the scene.
+		/// </param>
 		public static void LoadScene(
 			string sceneName,
 			LoadSceneMode loadSceneMode,
 			Action beforeLoadAction,
 			float waitForSecondsToLoad = 0,
-			bool autoActivate = true) {
+			bool autoActivate = true, 
+			bool autoHideUI = true) {
 
 			if (Instance != null) {
-				Instance._LoadScene(sceneName, loadSceneMode, beforeLoadAction, waitForSecondsToLoad, autoActivate);
+				Instance._LoadScene(sceneName, loadSceneMode, beforeLoadAction, waitForSecondsToLoad, autoActivate, autoHideUI);
 			}
 
 		}
@@ -80,6 +91,17 @@
 		public static void ActivateScene() {
 			if (Instance != null) {
 				Instance._ActivateScene();
+			}
+		}
+
+		/// <summary>
+		/// Hides the UI.
+		/// </summary>
+		/// <param name="animated">hide will be animated</param>
+		/// <param name="onComplete">An action to invoke on complete</param>
+		public static void HideUI(bool animated, Action onComplete = null) {
+			if (Instance != null) {
+				Instance._HideUI(animated, onComplete);
 			}
 		}
 
@@ -118,7 +140,7 @@
 				if (enabled) {
 					SubscribeToUI();
 				}
-				HideUI(false);
+				_HideUI(false);
 			}
 		}
 
@@ -131,7 +153,7 @@
 			base.Awake();
 			DontDestroyOnLoad(gameObject);
 			DisableCanvases();
-			HideUI(false);
+			_HideUI(false);
 		}
 
 		private void OnEnable() {
@@ -219,11 +241,11 @@
 
 		#region Private Methods - Loading
 
-		private void _LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
+		private void _LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true, bool autoHideUI = true) {
 			// Reset before the fade in so that no progress bars are shown filled
 			UIController.OnLoadProgress(0);
 			EnableCanvases();
-			ShowUI(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
+			ShowUI(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI));
 		}
 
 		private void _LoadScene(
@@ -231,7 +253,8 @@
 			LoadSceneMode loadSceneMode,
 			Action beforeLoadAction,
 			float waitForSecondsToLoad = 0,
-			bool autoActivate = true
+			bool autoActivate = true, 
+			bool autoHideUI = true
 		) {
 
 			// Reset before the fade in so that no progress bars are shown filled
@@ -242,11 +265,11 @@
 				beforeLoadAction?.Invoke();
 				if(Mathf.Approximately(waitForSecondsToLoad, 0)) {
 					// Loads the new scene immediately
-					LoadSceneAsync(sceneName, loadSceneMode, autoActivate);
+					LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI);
 				} else {
 					// Wait some time before loading the new scene
 					Animate.GetTimer().Play(waitForSecondsToLoad)
-						.SetOnComplete(() => LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
+						.SetOnComplete(() => LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI));
 				}
 			});
 
@@ -256,12 +279,12 @@
 			m_AsyncOperation.allowSceneActivation = true;
 		}
 
-		private void LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
+		private void LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true, bool autoHideUI = true) {
 			UIController.OnLoadStart();
-			StartCoroutine(_LoadSceneAsync(sceneName, loadSceneMode, autoActivate));
+			StartCoroutine(_LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI));
 		}
 
-		private IEnumerator _LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true) {
+		private IEnumerator _LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true, bool autoHideUI = true) {
 
 			m_AsyncOperation = SceneManager.LoadSceneAsync(sceneName, loadSceneMode);
 			m_AsyncOperation.allowSceneActivation = autoActivate;
@@ -277,7 +300,9 @@
 				yield return null;
 			}
 
-			HideUI(true);
+			if (autoHideUI) {
+				_HideUI(true);
+			}
 
 			// Reset fields
 			UpdateIsSceneLoaded(false);
@@ -325,7 +350,7 @@
 			}
 		}
 
-		private void HideUI(bool animated, Action onComplete = null) {
+		private void _HideUI(bool animated, Action onComplete = null) {
 			if (animated) {
 				UIController.OnFadeOut(FadeOutTime);
 				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
