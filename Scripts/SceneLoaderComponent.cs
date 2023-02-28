@@ -12,35 +12,39 @@ namespace CocodriloDog.App {
 	public class SceneLoaderComponent : MonoBehaviour {
 
 
-		#region Public Fields
+		#region Public Properties
 
 		/// <summary>
 		/// The name of the scene to load.
 		/// </summary>
-		[Tooltip("The name of the scene to load.")]
-		[SerializeField]
-		public string SceneName;
+		public string SceneName {
+			get => m_SceneName;
+			set => m_SceneName = value;
+		}
 
 		/// <summary>
 		/// The load scene mode.
 		/// </summary>
-		[Tooltip("The load scene mode.")]
-		[SerializeField]
-		public LoadSceneMode LoadSceneMode;
+		public LoadSceneMode LoadSceneMode {
+			get => m_LoadSceneMode;
+			set => m_LoadSceneMode = value;
+		}
 
 		/// <summary>
 		/// Will the scene autoactivate?
 		/// </summary>
-		[Tooltip("Will the scene autoactivate?")]
-		[SerializeField]
-		public bool AutoActivate = true;
+		public bool AutoActivate {
+			get => m_AutoActivate;
+			set => m_AutoActivate = value;
+		}
 
 		/// <summary>
 		/// Will the scene autohide?
 		/// </summary>
-		[Tooltip("Will the scene autohide?")]
-		[SerializeField]
-		public bool AutoHideUI = true;
+		public bool AutoHideUI {
+			get => m_AutoHideUI;
+			set => m_AutoHideUI = value;
+		}
 
 		#endregion
 
@@ -50,6 +54,27 @@ namespace CocodriloDog.App {
 		public void LoadScene() {
 			SceneLoader.LoadScene(SceneName, LoadSceneMode, AutoActivate, AutoHideUI);
 		}
+
+		#endregion
+
+
+		#region Private Fields
+
+		[Tooltip("The name of the scene to load.")]
+		[SerializeField]
+		private string m_SceneName;
+
+		[Tooltip("The load scene mode.")]
+		[SerializeField]
+		private LoadSceneMode m_LoadSceneMode;
+
+		[Tooltip("Will the scene autoactivate?")]
+		[SerializeField]
+		private bool m_AutoActivate = true;
+
+		[Tooltip("Will the scene autohide?")]
+		[SerializeField]
+		private bool m_AutoHideUI = true;
 
 		#endregion
 
