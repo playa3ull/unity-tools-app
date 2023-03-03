@@ -162,7 +162,7 @@
 
 		private void Start() {
 			// Initialize so that it is not created OnDestroy()
-			Animate animate = Animate.Instance;
+			MotionKit animate = MotionKit.Instance;
 		}
 
 		private void OnValidate() {
@@ -181,7 +181,7 @@
 
 		protected override void OnDestroy() {
 			base.OnDestroy();
-			Animate.ClearPlaybacks(this);
+			MotionKit.ClearPlaybacks(this);
 		}
 
 		#endregion
@@ -268,7 +268,7 @@
 					LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI);
 				} else {
 					// Wait some time before loading the new scene
-					Animate.GetTimer().Play(waitForSecondsToLoad)
+					MotionKit.GetTimer().Play(waitForSecondsToLoad)
 						.SetOnComplete(() => LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI));
 				}
 			});
@@ -339,9 +339,9 @@
 			UIController.gameObject.SetActive(true);
 			if (animated) {
 				UIController.OnFadeIn(FadeInTime);
-				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
+				MotionKit.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
 					.SetTimeMode(TimeMode.Unscaled)
-					.SetEasing(AnimateEasing.QuadInOut)
+					.SetEasing(MotionKitEasing.QuadInOut)
 					.SetOnComplete(() => onComplete?.Invoke())
 					.Play(0, 1, FadeInTime);
 			} else {
@@ -353,9 +353,9 @@
 		private void _HideUI(bool animated, Action onComplete = null) {
 			if (animated) {
 				UIController.OnFadeOut(FadeOutTime);
-				Animate.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
+				MotionKit.GetMotion(this, AlphaKey, v => UIController.CanvasGroup.alpha = v)
 					.SetTimeMode(TimeMode.Unscaled)
-					.SetEasing(AnimateEasing.QuadInOut)
+					.SetEasing(MotionKitEasing.QuadInOut)
 					.SetOnComplete(() => {
 						UIController.gameObject.SetActive(false);
 						DisableCanvases();
