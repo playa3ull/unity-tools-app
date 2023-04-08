@@ -95,7 +95,7 @@
 		}
 
 		/// <summary>
-		/// Hides the UI.
+		/// Hides the loader UI.
 		/// </summary>
 		/// <param name="animated">hide will be animated</param>
 		/// <param name="onComplete">An action to invoke on complete</param>
