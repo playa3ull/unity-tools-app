@@ -5,6 +5,7 @@
 	using UnityEngine;
 	using UnityEngine.SceneManagement;
 
+	// TODO: This may be replaced by SceneLoaderComponent
 	public class DefaultSceneLoader : MonoBehaviour {
 
 

@@ -46,6 +46,14 @@ namespace CocodriloDog.App {
 			set => m_AutoHideUI = value;
 		}
 
+		/// <summary>
+		/// Will the scene load on start?
+		/// </summary>
+		public bool LoadSceneOnStart {
+			get => m_LoadSceneOnStart;
+			set => m_LoadSceneOnStart = value;
+		}
+
 		#endregion
 
 
@@ -53,6 +61,17 @@ namespace CocodriloDog.App {
 
 		public void LoadScene() {
 			SceneLoader.LoadScene(SceneName, LoadSceneMode, AutoActivate, AutoHideUI);
+		}
+
+		#endregion
+
+
+		#region Unity Methods
+
+		private void Start() {
+			if (LoadSceneOnStart) {
+				LoadScene();
+			}
 		}
 
 		#endregion
@@ -75,6 +94,10 @@ namespace CocodriloDog.App {
 		[Tooltip("Will the scene autohide?")]
 		[SerializeField]
 		private bool m_AutoHideUI = true;
+
+		[Tooltip("Will the scene load on start?")]
+		[SerializeField]
+		private bool m_LoadSceneOnStart;
 
 		#endregion
 
