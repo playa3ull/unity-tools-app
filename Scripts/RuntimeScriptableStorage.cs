@@ -163,12 +163,10 @@
 
 		private string CrossPlatformFilePath {
 			get {
-				string path = "";
+				string path = Application.persistentDataPath;
 				if (!string.IsNullOrEmpty(FilePath)) {
 					// Allow the developer to type the path separated with "/"
-					string[] pathSteps = FilePath.Split('/');
-					path = Application.persistentDataPath;
-
+					string[] pathSteps = FilePath.Split('/');					
 					// Create a cross-platform path with the Path class
 					for (int i = 0; i < pathSteps.Length; i++) {
 						path = Path.Combine(path, pathSteps[i]);

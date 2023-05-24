@@ -27,7 +27,7 @@
 			EditorGUILayout.PropertyField(DefaultScriptableObjectProperty);
 			DrawScriptableObjectHelpBox();
 			DrawFileHelpBox();
-			DrawLoadUnloadButtons();
+			DrawMainButtons();
 			DrawPlayerScriptableObject();
 			DrawInspectButton();
 			serializedObject.ApplyModifiedProperties();
@@ -129,20 +129,23 @@
 			}
 		}
 
-		private void DrawLoadUnloadButtons() {
+		private void DrawMainButtons() {
 			GUILayout.BeginHorizontal();
 			{
-				GUILayoutOption buttonWidth = GUILayout.Width((EditorGUIUtility.currentViewWidth - 30) / 2);
+				GUILayoutOption buttonWidth = GUILayout.Width((EditorGUIUtility.currentViewWidth - 30) / 3);
 				EditorGUI.BeginDisabledGroup(!RuntimeScriptableStorage.FileExists);
 				if (RuntimeScriptableObjectProperty.objectReferenceValue == null) {
 					if (GUILayout.Button("Load", buttonWidth)) {
 						// Make the internal field to be assigned by invoking the getter.
-						ScriptableObject playerScriptableObject = RuntimeScriptableStorage.RuntimeScriptableObject;
+						_ = RuntimeScriptableStorage.RuntimeScriptableObject;
 					}
 				} else {
 					if (GUILayout.Button("Unload", buttonWidth)) {
 						RuntimeScriptableObjectProperty.objectReferenceValue = null;
 					}
+				}
+				if (GUILayout.Button("Save")) {
+					RuntimeScriptableStorage.Save();
 				}
 				if (GUILayout.Button("Delete")) {
 					if (EditorUtility.DisplayDialog(
