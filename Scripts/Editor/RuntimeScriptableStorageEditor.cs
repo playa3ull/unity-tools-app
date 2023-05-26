@@ -23,7 +23,7 @@
 		public override void OnInspectorGUI() {
 			serializedObject.Update();
 			DrawScript();
-			EditorGUILayout.PropertyField(FilePathProperty); 
+			DrawFilePath();
 			EditorGUILayout.PropertyField(DefaultScriptableObjectProperty);
 			DrawScriptableObjectHelpBox();
 			DrawFileHelpBox();
@@ -109,6 +109,18 @@
 			EditorGUI.EndDisabledGroup();
 		}
 
+		private void DrawFilePath() {
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.PropertyField(FilePathProperty);
+			EditorGUI.BeginDisabledGroup(!RuntimeScriptableStorage.FileExists);
+			if (GUILayout.Button("Locate File", GUILayout.Width(80))) {
+				Debug.Log($"{RuntimeScriptableStorage.CrossPlatformFilePath}");
+				EditorUtility.RevealInFinder(RuntimeScriptableStorage.CrossPlatformFilePath);
+			}
+			EditorGUI.EndDisabledGroup();
+			EditorGUILayout.EndHorizontal();
+		}
+
 		private void DrawScriptableObjectHelpBox() {
 			if(DefaultScriptableObjectProperty.objectReferenceValue == null) {
 				EditorGUILayout.HelpBox("A ScriptableObject must be assigned.", MessageType.Error);
@@ -144,9 +156,11 @@
 						RuntimeScriptableObjectProperty.objectReferenceValue = null;
 					}
 				}
+				EditorGUI.BeginDisabledGroup(RuntimeScriptableStorage.DefaultScriptableObject == null);
 				if (GUILayout.Button("Save")) {
 					RuntimeScriptableStorage.Save();
 				}
+				EditorGUI.EndDisabledGroup();
 				if (GUILayout.Button("Delete")) {
 					if (EditorUtility.DisplayDialog(
 						"Confirm Delete Player Scriptable Object File",

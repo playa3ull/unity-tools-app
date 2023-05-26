@@ -36,9 +36,35 @@
 		#region Public Properties
 
 		/// <summary>
+		/// The <see cref="ScriptableObject"/> that is a starting point for the data
+		/// that will be modified at runtime and then saved into disk.
+		/// </summary>
+		public ScriptableObject DefaultScriptableObject => m_DefaultScriptableObject;
+
+		/// <summary>
 		/// Is there a stored file?
 		/// </summary>
 		public bool FileExists => File.Exists(CrossPlatformFilePath);
+
+		/// <summary>
+		/// The full path of the file.
+		/// </summary>
+		public string CrossPlatformFilePath {
+			get {
+				string path = null;
+				if (!string.IsNullOrEmpty(FilePath)) {
+					path = Application.persistentDataPath;
+					// Allow the developer to type the path separated with "/"
+					string[] pathSteps = FilePath.Split('/');
+					// Create a cross-platform path with the Path class
+					for (int i = 0; i < pathSteps.Length; i++) {
+						path = Path.Combine(path, pathSteps[i]);
+					}
+					return path;
+				}
+				return path;
+			}
+		}
 
 		/// <summary>
 		/// The runtime version of the scriptable object, either loaded from disk or
@@ -72,12 +98,6 @@
 			}
 			private set { m_RuntimeScriptableObject = value; }
 		}
-
-		/// <summary>
-		/// The <see cref="ScriptableObject"/> that is a starting point for the data
-		/// that will be modified at runtime and then saved into disk.
-		/// </summary>
-		private ScriptableObject DefaultScriptableObject => m_DefaultScriptableObject;
 
 		#endregion
 
@@ -160,22 +180,6 @@
 
 
 		#region Private Properties
-
-		private string CrossPlatformFilePath {
-			get {
-				string path = Application.persistentDataPath;
-				if (!string.IsNullOrEmpty(FilePath)) {
-					// Allow the developer to type the path separated with "/"
-					string[] pathSteps = FilePath.Split('/');					
-					// Create a cross-platform path with the Path class
-					for (int i = 0; i < pathSteps.Length; i++) {
-						path = Path.Combine(path, pathSteps[i]);
-					}
-					return path;
-				}
-				return path;
-			}
-		}
 
 		private string RuntimeScriptableObjectName => string.Format("{0} (From file)", DefaultScriptableObject.name);
 
