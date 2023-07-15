@@ -145,6 +145,7 @@
 			GUILayout.BeginHorizontal();
 			{
 				GUILayoutOption buttonWidth = GUILayout.Width((EditorGUIUtility.currentViewWidth - 30) / 3);
+
 				EditorGUI.BeginDisabledGroup(!RuntimeScriptableStorage.FileExists);
 				if (RuntimeScriptableObjectProperty.objectReferenceValue == null) {
 					if (GUILayout.Button("Load", buttonWidth)) {
@@ -156,11 +157,15 @@
 						RuntimeScriptableObjectProperty.objectReferenceValue = null;
 					}
 				}
+				EditorGUI.EndDisabledGroup();
+
 				EditorGUI.BeginDisabledGroup(RuntimeScriptableStorage.DefaultScriptableObject == null);
 				if (GUILayout.Button("Save")) {
 					RuntimeScriptableStorage.Save();
 				}
 				EditorGUI.EndDisabledGroup();
+
+				EditorGUI.BeginDisabledGroup(!RuntimeScriptableStorage.FileExists);
 				if (GUILayout.Button("Delete")) {
 					if (EditorUtility.DisplayDialog(
 						"Confirm Delete Player Scriptable Object File",
@@ -177,6 +182,7 @@
 					}
 				}
 				EditorGUI.EndDisabledGroup();
+
 			}
 			GUILayout.EndHorizontal();
 		}

@@ -1,6 +1,6 @@
 ﻿namespace CocodriloDog.App {
 
-	//using Leguar.TotalJSON;
+
 	using CocodriloDog.CD_JSON;
 	using System;
 	using System.Collections;
@@ -193,7 +193,11 @@
 		private ScriptableObject Load(Type type) {
 			if (File.Exists(CrossPlatformFilePath)) {
 				string jsonString = File.ReadAllText(CrossPlatformFilePath);
-				return CD_JSON.Deserialize(type, jsonString) as ScriptableObject;
+				try {
+					return CD_JSON.Deserialize(type, jsonString) as ScriptableObject;
+				} catch(Exception e) {
+					Debug.LogWarning($"File has no proper format: {e}");
+				}
 			}
 			return null;
 		}
@@ -204,7 +208,7 @@
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 
 			// Save the data
-			var serialized = CD_JSON.Serialize(runtimeScriptableObject);
+			var serialized = CD_JSON.Serialize(runtimeScriptableObject, true);
 			File.WriteAllText(path, serialized);
 
 		}
