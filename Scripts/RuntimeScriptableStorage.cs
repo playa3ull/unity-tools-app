@@ -196,7 +196,7 @@
 				try {
 					return CD_JSON.Deserialize(type, jsonString) as ScriptableObject;
 				} catch(Exception e) {
-					Debug.LogWarning($"File has no proper format: {e}");
+					Debug.LogWarning($"File has no proper format ({name}): {e}");
 				}
 			}
 			return null;
