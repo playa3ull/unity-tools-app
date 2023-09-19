@@ -1,6 +1,6 @@
 ﻿namespace CocodriloDog.App {
 
-	using CocodriloDog.Animation;
+	using CocodriloDog.MotionKit;
 	using CocodriloDog.Core;
 	using System;
 	using System.Collections;
