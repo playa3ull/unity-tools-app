@@ -91,7 +91,7 @@ namespace CocodriloDog.App {
 		[SerializeField]
 		private bool m_AutoActivate = true;
 
-		[Tooltip("Will the scene autohide?")]
+		[Tooltip("Will the loading UI autohide?")]
 		[SerializeField]
 		private bool m_AutoHideUI = true;
 

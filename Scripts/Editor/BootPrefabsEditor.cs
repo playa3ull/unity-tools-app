@@ -1,5 +1,6 @@
 ﻿namespace CocodriloDog.App {
 
+	using CocodriloDog.Core;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEditor;
@@ -27,9 +28,7 @@
 
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void BeforeSceneLoad() {
-			if (FindObjectOfType<BootInstantiator>() == null) {
-				InstantiateBootPrefabs();
-			}
+			InstantiateBootPrefabs();
 		}
 
 		private static void InstantiateBootPrefabs() {
@@ -47,6 +46,8 @@
 					}
 				}
 			}
+			// Mark this to prevent double instantiation
+			BootPrefabs.HasInstantiatedPrefabs = true;
 		}
 
 		private static bool CanRunInActiveScene(BootPrefabs bootPrefabs) {
@@ -71,6 +72,7 @@
 
 		public override void OnInspectorGUI() {
 			serializedObject.Update();
+			CDEditorUtility.DrawDisabledField(ScriptProperty);
 			EditorGUILayout.Space();
 			DrawHelpBox();
 			EditorGUILayout.Space();
@@ -84,6 +86,8 @@
 
 
 		#region Private Fields
+
+		private SerializedProperty m_ScriptProperty;
 
 		private ReorderableList m_PrefabsList;
 
@@ -100,6 +104,8 @@
 
 		#region Private Properties
 
+		private SerializedProperty ScriptProperty => m_ScriptProperty = m_ScriptProperty ?? serializedObject.FindProperty("m_Script");
+
 		private ReorderableList PrefabsList {
 			get {
 				if(m_PrefabsList == null) {
@@ -111,9 +117,7 @@
 			}
 		}
 
-		private SerializedProperty PrefabsProperty {
-			get { return m_PrefabsProperty = m_PrefabsProperty ?? serializedObject.FindProperty("m_Prefabs"); }
-		}
+		private SerializedProperty PrefabsProperty => m_PrefabsProperty = m_PrefabsProperty ?? serializedObject.FindProperty("m_Prefabs");
 
 		private ReorderableList SpecificScenesList {
 			get {
@@ -126,13 +130,11 @@
 			}
 		}
 
-		private SerializedProperty SpecificScenesProperty {
-			get { return m_SpecificScenesProperty = m_SpecificScenesProperty ?? serializedObject.FindProperty("m_SpecificScenes"); }
-		}
+		private SerializedProperty SpecificScenesProperty =>
+			m_SpecificScenesProperty = m_SpecificScenesProperty ?? serializedObject.FindProperty("m_SpecificScenes");
 
-		private SerializedProperty BootOnlyOnSpecificScenesProperty {
-			get { return m_BootOnlyOnSpecificScenesProperty = m_BootOnlyOnSpecificScenesProperty ?? serializedObject.FindProperty("m_BootOnlyOnSpecificScenes"); }
-		}
+		private SerializedProperty BootOnlyOnSpecificScenesProperty =>
+			m_BootOnlyOnSpecificScenesProperty = m_BootOnlyOnSpecificScenesProperty ?? serializedObject.FindProperty("m_BootOnlyOnSpecificScenes");
 
 		#endregion
 
