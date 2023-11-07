@@ -28,7 +28,7 @@
 		/// <summary>
 		/// This flags register whether the boot prefabs have been instantiated or not
 		/// </summary>
-		public static bool HasInstantiatedPrefabs {
+		public bool HasInstantiatedPrefabs {
 			get => m_HasInstantiatedPrefabs;
 #if UNITY_EDITOR
 			set
@@ -37,11 +37,6 @@
 			}
 #endif
 		}
-
-		#endregion
-
-
-		#region Public Properties
 
 		/// <summary>
 		/// How many prefabs are referenced?
@@ -76,18 +71,6 @@
 		}
 
 		/// <summary>
-		/// Instantiates the prefab at the <paramref name="index"/>
-		/// </summary>
-		/// <param name="index"></param>
-		/// <returns>The prefab.</returns>
-		public GameObject InstantiatePrefabAt(int index) {
-			GameObject original = m_Prefabs[index];
-			GameObject clone = Instantiate(original);
-			clone.name = original.name;
-			return clone;
-		}
-
-		/// <summary>
 		/// Gets the prefab at the <paramref name="index"/>
 		/// </summary>
 		/// <param name="index"></param>
@@ -97,17 +80,36 @@
 		#endregion
 
 
-		#region Private Static Fields
+		#region Private Fields - Serialized
 
-		private static bool m_HasInstantiatedPrefabs;
+		[SerializeField]
+		private List<GameObject> m_Prefabs;
 
 		#endregion
 
 
-		#region Private Fields
+		#region Private Fields - Non Serialized
 
-		[SerializeField]
-		private List<GameObject> m_Prefabs;
+		[NonSerialized]
+		private bool m_HasInstantiatedPrefabs;
+
+		#endregion
+
+
+		#region Private Methods
+
+		/// <summary>
+		/// Instantiates the prefab at the <paramref name="index"/>
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns>The prefab.</returns>
+		private GameObject InstantiatePrefabAt(int index)
+		{
+			GameObject original = m_Prefabs[index];
+			GameObject clone = Instantiate(original);
+			clone.name = original.name;
+			return clone;
+		}
 
 		#endregion
 

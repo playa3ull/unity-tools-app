@@ -44,10 +44,10 @@
 						Debug.LogFormat("BootPrefabs: Instantiated boot object {0}", clone.name);
 						clone.name = original.name;
 					}
+					// Mark this to prevent double instantiation
+					bootPrefabs.HasInstantiatedPrefabs = true;
 				}
 			}
-			// Mark this to prevent double instantiation
-			BootPrefabs.HasInstantiatedPrefabs = true;
 		}
 
 		private static bool CanRunInActiveScene(BootPrefabs bootPrefabs) {
