@@ -4,6 +4,9 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 
+	/// <summary>
+	/// Instantiates the boot prefabs referenced in the <see cref="BootPrefabs"/> assets.
+	/// </summary>
 	public class BootInstantiator : MonoBehaviour {
 
 

@@ -26,7 +26,7 @@
 		#region Public Properties
 
 		/// <summary>
-		/// This flags register whether the boot prefabs have been instantiated or not
+		/// This flags register whether the boot prefabs have been instantiated or not.
 		/// </summary>
 		public bool HasInstantiatedPrefabs {
 			get => m_HasInstantiatedPrefabs;
