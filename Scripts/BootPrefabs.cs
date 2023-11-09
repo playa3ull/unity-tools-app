@@ -31,8 +31,7 @@
 		public bool HasInstantiatedPrefabs {
 			get => m_HasInstantiatedPrefabs;
 #if UNITY_EDITOR
-			set
-			{
+			set {
 				m_HasInstantiatedPrefabs = value;
 			}
 #endif
@@ -54,18 +53,14 @@
 		/// <returns>An array with the clones.</returns>
 		public GameObject[] InstantiatePrefabs() {
 			// They may have been instantiated by the editor
-			if (!HasInstantiatedPrefabs)
-			{
+			if (!HasInstantiatedPrefabs) {
 				List<GameObject> clones = new List<GameObject>(PrefabsCount);
-				for (int i = 0; i < PrefabsCount; i++)
-				{
+				for (int i = 0; i < PrefabsCount; i++) {
 					clones.Add(InstantiatePrefabAt(i));
 				}
 				m_HasInstantiatedPrefabs = true;
 				return clones.ToArray();
-			}
-			else
-			{
+			} else {
 				return null;
 			}
 		}
@@ -103,8 +98,7 @@
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns>The prefab.</returns>
-		private GameObject InstantiatePrefabAt(int index)
-		{
+		private GameObject InstantiatePrefabAt(int index) {
 			GameObject original = m_Prefabs[index];
 			GameObject clone = Instantiate(original);
 			clone.name = original.name;
