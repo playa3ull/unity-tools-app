@@ -6,6 +6,15 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 
+	#region Small Types
+
+	public enum FrameRateMode {
+		TargetFrameRate,
+		VSyncCount
+	}
+
+	#endregion
+
 	// TODO: This may be a good candidate for a `Settings` package
 	public class FPSManager : MonoBehaviour {
 
@@ -16,8 +25,15 @@
 			DontDestroyOnLoad(gameObject);
 			var settings = PlatformSettings.FirstOrDefault(s => s.Platform == Application.platform);
 			if (settings != null) {
-				QualitySettings.vSyncCount = settings.VSyncCount;
-				Application.targetFrameRate = settings.TargetFrameRate;
+				switch (settings.Mode) {
+					case FrameRateMode.TargetFrameRate:
+						Application.targetFrameRate = settings.TargetFrameRate;
+						QualitySettings.vSyncCount = 0;
+						break;
+					case FrameRateMode.VSyncCount:
+						QualitySettings.vSyncCount = settings.VSyncCount;
+						break;
+				}
 			}
 		}
 
@@ -75,6 +91,8 @@
 
 		public RuntimePlatform Platform => m_Platform;
 
+		public FrameRateMode Mode => m_Mode;
+
 		public int TargetFrameRate => m_TargetFrameRate;
 
 		public int VSyncCount => m_VSyncCount;
@@ -86,6 +104,9 @@
 
 		[SerializeField]
 		private RuntimePlatform m_Platform;
+
+		[SerializeField]
+		private FrameRateMode m_Mode;
 
 		[SerializeField]
 		private int m_TargetFrameRate = 60;
