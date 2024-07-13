@@ -1,0 +1,16 @@
+{
+    "name": "CocodriloDog.App.Examples",
+    "rootNamespace": "",
+    "references": [
+        "GUID:953430efde7e3d447ac2ef4cd77fbc00"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
