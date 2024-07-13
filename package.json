@@ -1,0 +1,31 @@
+{
+  "name": "com.cocodrilodog.app",
+  "version": "1.0.0",
+  "displayName": "Cocodrilo Dog App",
+  "description": "App level functionality.",
+  "unity": "2019.3",
+  "documentationUrl": "https://github.com/cocodrilodog/tools-app",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+  "keywords": [
+    "keyword1",
+    "keyword2",
+    "keyword3"
+  ],
+  "author": {
+    "name": "Cocodrilo Dog",
+    "email": "contact@cocodrilodog.com",
+    "url": "https://www.cocodrilodog.com"
+  },
+  "samples": [
+    {
+      "displayName": "Examples",
+      "description": "Contains example scenes for Cocodrilo Dog App objects",
+      "path": "Samples~"
+    }
+  ],
+  "dependencies": {
+    "com.cocodrilodog.core": "1.0.4",
+    "com.cocodrilodog.motionkit": "1.0.4"
+  }
+}
