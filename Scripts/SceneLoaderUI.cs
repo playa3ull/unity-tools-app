@@ -6,9 +6,9 @@
 	using UnityEngine.UI;
 
 	/// <summary>
-	/// Implementation of <see cref="AbstractSceneLoaderUIController"/>
+	/// Implementation of <see cref="AbstractSceneLoaderUI"/>
 	/// </summary>
-	public class SceneLoaderUIController : AbstractSceneLoaderUIController {
+	public class SceneLoaderUI : AbstractSceneLoaderUI {
 
 
 		#region Public Properties

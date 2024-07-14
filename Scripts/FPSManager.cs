@@ -32,6 +32,7 @@
 						break;
 					case FrameRateMode.VSyncCount:
 						QualitySettings.vSyncCount = settings.VSyncCount;
+						Application.targetFrameRate = -1;
 						break;
 				}
 			}
