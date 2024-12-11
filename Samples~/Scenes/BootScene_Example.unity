@@ -492,7 +492,7 @@ GameObject:
   - component: {fileID: 1485899192}
   - component: {fileID: 1485899193}
   m_Layer: 0
-  m_Name: DefaultSceneLoader
+  m_Name: SceneLoaderTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -525,6 +525,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c0e9fda922af4247ab0dfe783e2327b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneLoader:
+    m_UseAsset: 1
+    m_Value: {fileID: 0}
+    m_Asset: {fileID: 11400000, guid: 4cfbb774073063e4aab50ffbd541479d, type: 2}
   m_SceneName: BootScene_Example_SceneToLoad
   m_LoadSceneMode: 0
   m_AutoActivate: 0

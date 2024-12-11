@@ -31,7 +31,9 @@
 
 		public override void OnLoadProgress(float progress) {
 			base.OnLoadProgress(progress);
-			ProgressImage.fillAmount = progress / 0.9f;
+			if (ProgressImage != null) {
+				ProgressImage.fillAmount = progress / 0.9f;
+			}
 		}
 
 		public override void OnLoadComplete() {

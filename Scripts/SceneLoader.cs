@@ -10,14 +10,14 @@
 	using UnityEngine.UI;
 
 	/// <summary>
-	/// A singleton that can load scenes asynchronously and display the load progress.
+	/// A MonoBehaviour that can load scenes asynchronously and display the load progress.
 	/// </summary>
 	/// 
 	/// <remarks>
-	/// In needs a reference to a <see cref="AbstractSceneLoaderUI"/> in order to display
+	/// In needs a reference to an <see cref="AbstractSceneLoaderUI"/> in order to display
 	/// the download progress.
 	/// </remarks>
-	public class SceneLoader : MonoSingleton<SceneLoader> {
+	public class SceneLoader : MonoBehaviour {
 
 
 		#region Public Static Methods
@@ -35,13 +35,14 @@
 		/// </param>
 		/// 
 		///	<param name="autoHideUI">
-		/// Will the scene hide immediately after it loads? If false, a call
+		/// Will the UI hide immediately after it loads? If false, a call
 		/// to <see cref="HideUI(bool, Action)"/> is required to hide the scene.
 		/// </param>
-		public static void LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true, bool autoHideUI = true) {
-			if (Instance != null) {
-				Instance._LoadScene(sceneName, loadSceneMode, autoActivate, autoHideUI);
-			}
+		public void LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true, bool autoHideUI = true) {
+			// Reset before the fade in so that no progress bars are shown filled
+			UI.OnLoadProgress(0);
+			EnableCanvases();
+			ShowUI(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI));
 		}
 
 		/// <summary>
@@ -68,10 +69,10 @@
 		/// </param>
 		/// 
 		///	<param name="autoHideUI">
-		/// Will the scene hide immediately after it loads? If false, a call
+		/// Will the UI hide immediately after it loads? If false, a call
 		/// to <see cref="HideUI(bool, Action)"/> is required to hide the scene.
 		/// </param>
-		public static void LoadScene(
+		public void LoadScene(
 			string sceneName,
 			LoadSceneMode loadSceneMode,
 			Action beforeLoadAction,
@@ -79,19 +80,29 @@
 			bool autoActivate = true, 
 			bool autoHideUI = true) {
 
-			if (Instance != null) {
-				Instance._LoadScene(sceneName, loadSceneMode, beforeLoadAction, waitForSecondsToLoad, autoActivate, autoHideUI);
-			}
+			// Reset before the fade in so that no progress bars are shown filled
+			UI.OnLoadProgress(0);
+			EnableCanvases();
+			ShowUI(true, () => {
+				// Perform the action
+				beforeLoadAction?.Invoke();
+				if (Mathf.Approximately(waitForSecondsToLoad, 0)) {
+					// Loads the new scene immediately
+					LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI);
+				} else {
+					// Wait some time before loading the new scene
+					MotionKit.GetTimer().Play(waitForSecondsToLoad)
+						.SetOnComplete(() => LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI));
+				}
+			});
 
 		}
 
 		/// <summary>
 		/// Activates the scene.
 		/// </summary>
-		public static void ActivateScene() {
-			if (Instance != null) {
-				Instance._ActivateScene();
-			}
+		public void ActivateScene() {
+			m_AsyncOperation.allowSceneActivation = true;
 		}
 
 		/// <summary>
@@ -99,9 +110,20 @@
 		/// </summary>
 		/// <param name="animated">hide will be animated</param>
 		/// <param name="onComplete">An action to invoke on complete</param>
-		public static void HideUI(bool animated, Action onComplete = null) {
-			if (Instance != null) {
-				Instance._HideUI(animated, onComplete);
+		public void HideUI(bool animated, Action onComplete = null) {
+			if (animated) {
+				UI.OnFadeOut(FadeOutTime);
+				MotionKit.GetMotion(this, AlphaKey, v => UI.CanvasGroup.alpha = v)
+					.SetTimeMode(TimeMode.Unscaled)
+					.SetEasing(MotionKitEasing.QuadInOut)
+					.SetOnComplete(() => {
+						UI.gameObject.SetActive(false);
+						DisableCanvases();
+					})
+					.Play(1, 0, FadeOutTime);
+			} else {
+				UI.CanvasGroup.alpha = 0;
+				UI.gameObject.SetActive(false);
 			}
 		}
 
@@ -140,7 +162,7 @@
 				if (enabled) {
 					SubscribeToUI();
 				}
-				_HideUI(false);
+				HideUI(false);
 			}
 		}
 
@@ -149,11 +171,10 @@
 
 		#region Unity Methods
 
-		protected override void Awake() {
-			base.Awake();
+		protected void Awake() {
 			DontDestroyOnLoad(gameObject);
 			DisableCanvases();
-			_HideUI(false);
+			HideUI(false);
 		}
 
 		private void OnEnable() {
@@ -162,7 +183,7 @@
 
 		private void Start() {
 			// Initialize so that it is not created OnDestroy()
-			MotionKit animate = MotionKit.Instance;
+			_ = MotionKit.Instance;
 		}
 
 		private void OnValidate() {
@@ -179,8 +200,7 @@
 			UnsubscribeFromUI();
 		}
 
-		protected override void OnDestroy() {
-			base.OnDestroy();
+		protected void OnDestroy() {
 			MotionKit.ClearPlaybacks(this);
 		}
 
@@ -241,43 +261,6 @@
 
 		#region Private Methods - Loading
 
-		private void _LoadScene(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true, bool autoHideUI = true) {
-			// Reset before the fade in so that no progress bars are shown filled
-			UI.OnLoadProgress(0);
-			EnableCanvases();
-			ShowUI(true, () => LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI));
-		}
-
-		private void _LoadScene(
-			string sceneName,
-			LoadSceneMode loadSceneMode,
-			Action beforeLoadAction,
-			float waitForSecondsToLoad = 0,
-			bool autoActivate = true, 
-			bool autoHideUI = true
-		) {
-
-			// Reset before the fade in so that no progress bars are shown filled
-			UI.OnLoadProgress(0);
-			EnableCanvases();
-			ShowUI(true, () => {
-				// Perform the action
-				beforeLoadAction?.Invoke();
-				if(Mathf.Approximately(waitForSecondsToLoad, 0)) {
-					// Loads the new scene immediately
-					LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI);
-				} else {
-					// Wait some time before loading the new scene
-					MotionKit.GetTimer().Play(waitForSecondsToLoad)
-						.SetOnComplete(() => LoadSceneAsync(sceneName, loadSceneMode, autoActivate, autoHideUI));
-				}
-			});
-
-		}
-
-		private void _ActivateScene() {
-			m_AsyncOperation.allowSceneActivation = true;
-		}
 
 		private void LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode, bool autoActivate = true, bool autoHideUI = true) {
 			UI.OnLoadStart();
@@ -301,7 +284,7 @@
 			}
 
 			if (autoHideUI) {
-				_HideUI(true);
+				HideUI(true);
 			}
 
 			// Reset fields
@@ -347,23 +330,6 @@
 			} else {
 				UI.CanvasGroup.alpha = 1;
 				onComplete?.Invoke();
-			}
-		}
-
-		private void _HideUI(bool animated, Action onComplete = null) {
-			if (animated) {
-				UI.OnFadeOut(FadeOutTime);
-				MotionKit.GetMotion(this, AlphaKey, v => UI.CanvasGroup.alpha = v)
-					.SetTimeMode(TimeMode.Unscaled)
-					.SetEasing(MotionKitEasing.QuadInOut)
-					.SetOnComplete(() => {
-						UI.gameObject.SetActive(false);
-						DisableCanvases();
-					})
-					.Play(1, 0, FadeOutTime);
-			} else {
-				UI.CanvasGroup.alpha = 0;
-				UI.gameObject.SetActive(false);
 			}
 		}
 

@@ -409,7 +409,7 @@ GameObject:
   - component: {fileID: 7348244804412677561}
   - component: {fileID: 7348244804412677560}
   m_Layer: 0
-  m_Name: SceneLoaderPrefab
+  m_Name: SceneLoader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

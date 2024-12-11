@@ -23,7 +23,7 @@ namespace CocodriloDog.App {
 			GameObject instance = GameObject.Instantiate(prefab);
 			instance.name = prefab.name;
 
-			string newPrefabPath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/SceneLoader.prefab");
+			string newPrefabPath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/{instance.name}.prefab");
 			PrefabUtility.SaveAsPrefabAsset(instance, newPrefabPath);
 			Object.DestroyImmediate(instance);
 
@@ -57,7 +57,7 @@ namespace CocodriloDog.App {
 
 		#region Private Constants
 
-		private const string PrefabPath = "Packages/com.cocodrilodog.app/Prefabs/SceneLoaderPrefab.prefab";
+		private const string PrefabPath = "Packages/com.cocodrilodog.app/Prefabs/SceneLoader.prefab";
 
 		#endregion
 

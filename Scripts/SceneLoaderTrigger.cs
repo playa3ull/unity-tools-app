@@ -1,5 +1,6 @@
 namespace CocodriloDog.App {
 
+	using CocodriloDog.Core;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
@@ -9,7 +10,7 @@ namespace CocodriloDog.App {
 	/// Utility class that allows an easy way to use the <see cref="SceneLoader"/> from a component
 	/// without additional scripting.
 	/// </summary>
-	public class SceneLoaderComponent : MonoBehaviour {
+	public class SceneLoaderTrigger : MonoBehaviour {
 
 
 		#region Public Properties
@@ -60,7 +61,7 @@ namespace CocodriloDog.App {
 		#region Public Methods
 
 		public void LoadScene() {
-			SceneLoader.LoadScene(SceneName, LoadSceneMode, AutoActivate, AutoHideUI);
+			m_SceneLoader.Value.LoadScene(SceneName, LoadSceneMode, AutoActivate, AutoHideUI);
 		}
 
 		#endregion
@@ -78,6 +79,10 @@ namespace CocodriloDog.App {
 
 
 		#region Private Fields
+
+		[Tooltip("A reference to the SceneLoader that this trigger will use.")]
+		[SerializeField]
+		private ScriptableReferenceField<SceneLoader> m_SceneLoader;
 
 		[Tooltip("The name of the scene to load.")]
 		[SerializeField]

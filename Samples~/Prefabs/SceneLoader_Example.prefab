@@ -408,6 +408,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7348244804412677561}
   - component: {fileID: 7348244804412677560}
+  - component: {fileID: 5722968329986785164}
   m_Layer: 0
   m_Name: SceneLoader_Example
   m_TagString: Untagged
@@ -447,6 +448,21 @@ MonoBehaviour:
   FadeInTime: 0.2
   FadeOutTime: 0.2
   m_UI: {fileID: 7348244805457241529}
+--- !u!114 &5722968329986785164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7348244804412677562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85b91145a36f663489eb06bbf61c6fc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ObjectToReference: {fileID: 7348244804412677560}
+  m_Destination: {fileID: 11400000, guid: 4cfbb774073063e4aab50ffbd541479d, type: 2}
+  m_SetValueOnAwake: 1
 --- !u!1 &7348244804437527640
 GameObject:
   m_ObjectHideFlags: 0
