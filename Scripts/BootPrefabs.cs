@@ -5,6 +5,19 @@
 	using UnityEngine;
 	using UnityEditor;
 	using System;
+	using CocodriloDog.Core;
+
+
+	#region Small Types
+
+	public enum BootPrefabsEditorInstantiationMode {
+		InstantiatePrefabsInAllScenes,
+		InstantiatePrefabsOnlyInSpecificScenes,
+		InstantiatePrefabsInAllScenesExcept,
+	}
+
+	#endregion
+
 
 	/// <summary>
 	/// Stores prefabs that will be instantiated when the app boots. This scriptable object must reside
@@ -77,8 +90,15 @@
 
 		#region Private Fields - Serialized
 
+		[HorizontalLine]
+		[Header("RUNTIME")]
 		[SerializeField]
 		private List<GameObject> m_Prefabs;
+
+		[HorizontalLine]
+		[Header("EDITOR")]
+		[SerializeField]
+		private BootPrefabsEditorInstantiationMode m_EditorInstantiationMode;
 
 		#endregion
 
@@ -113,16 +133,20 @@
 
 		#region Public Properties
 
-		public bool BootOnlyOnSpecificScenes => m_BootOnlyOnSpecificScenes;
+		public BootPrefabsEditorInstantiationMode EditorInstantiationMode => m_EditorInstantiationMode;
+
+		public int SpecificScenesCount => m_SpecificScenes.Count;
+
+		public int ExceptionScenesCount => m_ExceptionScenes.Count;
 
 		#endregion
 
 
 		#region Public Methods
 
-		public int SpecificScenesCount => m_SpecificScenes.Count;
-
 		public SceneAsset GetSpecificSceneAt(int index) => m_SpecificScenes[index];
+
+		public SceneAsset GetExceptionSceneAt(int index) => m_ExceptionScenes[index];
 
 		#endregion
 
@@ -130,18 +154,18 @@
 		#region Private Fields
 
 		[Tooltip(
-			"When running in the editor, The prefabs will be instantiated only when any of the specific scenes " +
-			"is the active scene."
-		)]
-		[SerializeField]
-		private bool m_BootOnlyOnSpecificScenes;
-
-		[Tooltip(
-			"When running in the editor, the prefabs will be instantiated when any of these scenes is active, " +
-			"if m_BootOnlyOnSpecificScenes is checked."
+			"When running in the editor, the prefabs will be instantiated only when any of these scenes is " +
+			"the active one."
 		)]
 		[SerializeField]
 		private List<SceneAsset> m_SpecificScenes;
+
+		[Tooltip(
+			"When running in the editor, the prefabs will be instantiated if any scene is the active one, except " +
+			"for the scenes in this list."
+		)]
+		[SerializeField]
+		private List<SceneAsset> m_ExceptionScenes;
 
 		#endregion
 

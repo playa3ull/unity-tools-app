@@ -3,6 +3,7 @@
 	using CocodriloDog.Core;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
 	using UnityEditor;
 	using UnityEditor.SceneManagement;
 	using UnityEditorInternal;
@@ -35,6 +36,7 @@
 			// Look for the BootPrefabs assets.
 			foreach (BootPrefabs bootPrefabs in Resources.LoadAll<BootPrefabs>("")) {
 				if (CanRunInActiveScene(bootPrefabs)) {
+
 					// Iterate through the prefabs
 					for (int i = 0; i < bootPrefabs.PrefabsCount; i++) {
 						// Instantiate each of the prefabs with PrefabUtility to preserve
@@ -44,25 +46,36 @@
 						Debug.LogFormat("BootPrefabs: Instantiated boot object {0}", clone.name);
 						clone.name = original.name;
 					}
+
 					// Mark this to prevent double instantiation
 					bootPrefabs.HasInstantiatedPrefabs = true;
+
 				}
 			}
 		}
 
 		private static bool CanRunInActiveScene(BootPrefabs bootPrefabs) {
-			if (!bootPrefabs.BootOnlyOnSpecificScenes) { // <- Can run in any scene
-				return true;
-			} else {
-				// Only run if the active scene is allowed.
-				for (int i = 0; i < bootPrefabs.SpecificScenesCount; i++) {
-					SceneAsset sceneAsset = bootPrefabs.GetSpecificSceneAt(i);
-					if(SceneManager.GetActiveScene().path == AssetDatabase.GetAssetPath(sceneAsset)) {
-						return true;
-					}
-				}
-				return false;
-			}
+
+			var activeScenePath = SceneManager.GetActiveScene().path;
+
+			return bootPrefabs.EditorInstantiationMode switch {
+
+				BootPrefabsEditorInstantiationMode.InstantiatePrefabsInAllScenes => true,
+
+				BootPrefabsEditorInstantiationMode.InstantiatePrefabsOnlyInSpecificScenes =>
+					Enumerable.Range(0, bootPrefabs.SpecificScenesCount)
+						.Select(i => bootPrefabs.GetSpecificSceneAt(i))
+						.Any(scene => activeScenePath == AssetDatabase.GetAssetPath(scene)),
+
+				BootPrefabsEditorInstantiationMode.InstantiatePrefabsInAllScenesExcept =>
+					!Enumerable.Range(0, bootPrefabs.ExceptionScenesCount)
+						.Select(i => bootPrefabs.GetExceptionSceneAt(i))
+						.Any(scene => activeScenePath == AssetDatabase.GetAssetPath(scene)),
+
+				_ => false
+
+			};
+
 		}
 
 		#endregion
@@ -70,127 +83,96 @@
 
 		#region Unity Methods
 
-		public override void OnInspectorGUI() {
-			serializedObject.Update();
-			CDEditorUtility.DrawDisabledField(ScriptProperty);
-			EditorGUILayout.Space();
-			DrawHelpBox();
-			EditorGUILayout.Space();
-			PrefabsList.DoLayoutList();
-			DrawBootOnlyOnSpecificScenes();
-			DrawSpecificScenes();
-			serializedObject.ApplyModifiedProperties();
+		private void OnEnable() {
+			ScriptProperty = serializedObject.FindProperty("m_Script");
+			PrefabsProperty = serializedObject.FindProperty("m_Prefabs");
+			EditorInstantiationModeProperty = serializedObject.FindProperty("m_EditorInstantiationMode");
+			SpecificScenesProperty = serializedObject.FindProperty("m_SpecificScenes");
+			ExceptionScenesProperty = serializedObject.FindProperty("m_ExceptionScenes");
 		}
 
-		#endregion
+		public override void OnInspectorGUI() {
 
+			serializedObject.Update();
 
-		#region Private Fields
+			CDEditorUtility.DrawDisabledField(ScriptProperty);
 
-		private SerializedProperty m_ScriptProperty;
+			EditorGUILayout.PropertyField(PrefabsProperty);
 
-		private ReorderableList m_PrefabsList;
+			DrawHelpBox1();
 
-		private SerializedProperty m_PrefabsProperty;
+			EditorGUILayout.Space();
 
-		private ReorderableList m_SpecificScenesList;
+			EditorGUILayout.PropertyField(EditorInstantiationModeProperty);
 
-		private SerializedProperty m_SpecificScenesProperty;
+			DrawHelpBox2();
 
-		private SerializedProperty m_BootOnlyOnSpecificScenesProperty;
+			switch (EditorInstantiationModeProperty.enumValueIndex) {
+
+				case (int)BootPrefabsEditorInstantiationMode.InstantiatePrefabsOnlyInSpecificScenes:
+					EditorGUILayout.PropertyField(SpecificScenesProperty);
+					break;
+
+				case (int)BootPrefabsEditorInstantiationMode.InstantiatePrefabsInAllScenesExcept:
+					EditorGUILayout.PropertyField(ExceptionScenesProperty);
+					break;
+
+			}
+
+			serializedObject.ApplyModifiedProperties();
+
+		}
 
 		#endregion
 
 
 		#region Private Properties
 
-		private SerializedProperty ScriptProperty => m_ScriptProperty = m_ScriptProperty ?? serializedObject.FindProperty("m_Script");
+		private SerializedProperty ScriptProperty { get; set; }
 
-		private ReorderableList PrefabsList {
-			get {
-				if(m_PrefabsList == null) {
-					m_PrefabsList = new ReorderableList(serializedObject, PrefabsProperty);
-					m_PrefabsList.drawHeaderCallback = PrefabsList_drawHeaderCallback;
-					m_PrefabsList.drawElementCallback = PrefabsList_drawElementCallback;
-				}
-				return m_PrefabsList;
-			}
-		}
+		private SerializedProperty PrefabsProperty { get; set; }
 
-		private SerializedProperty PrefabsProperty => m_PrefabsProperty = m_PrefabsProperty ?? serializedObject.FindProperty("m_Prefabs");
+		private SerializedProperty EditorInstantiationModeProperty { get; set; }
 
-		private ReorderableList SpecificScenesList {
-			get {
-				if (m_SpecificScenesList == null) {
-					m_SpecificScenesList = new ReorderableList(serializedObject, SpecificScenesProperty);
-					m_SpecificScenesList.drawHeaderCallback = SpecificScenes_drawHeaderCallback;
-					m_SpecificScenesList.drawElementCallback = SpecificScenes_drawElementCallback;
-				}
-				return m_SpecificScenesList;
-			}
-		}
+		private SerializedProperty SpecificScenesProperty { get; set; }
 
-		private SerializedProperty SpecificScenesProperty =>
-			m_SpecificScenesProperty = m_SpecificScenesProperty ?? serializedObject.FindProperty("m_SpecificScenes");
-
-		private SerializedProperty BootOnlyOnSpecificScenesProperty =>
-			m_BootOnlyOnSpecificScenesProperty = m_BootOnlyOnSpecificScenesProperty ?? serializedObject.FindProperty("m_BootOnlyOnSpecificScenes");
+		private SerializedProperty ExceptionScenesProperty { get; set; }
 
 		#endregion
 
 
 		#region Private Methods
 
-		private void DrawHelpBox() {
-			if (BootOnlyOnSpecificScenesProperty.boolValue) {
-				EditorGUILayout.HelpBox(
-					"These prefabs will be instantiated if no BootInstantiator is found in the " +
-					"active scene, but only if the active scene is one of the specific scenes.",
-					MessageType.Info
-				);
-			} else {
-				EditorGUILayout.HelpBox(
-					"These prefabs will be instantiated if no BootInstantiator is found in the " +
-					"active scene.",
-					MessageType.Info
-				);
-			}
+		private void DrawHelpBox1() {
+			string message = "These prefabs will be instantiated by a BootInstantiator component in a scene.";
+			EditorGUILayout.HelpBox(message, MessageType.Info);
 		}
 
-		private void PrefabsList_drawHeaderCallback(Rect rect) {
-			EditorGUI.LabelField(rect, ObjectNames.NicifyVariableName(PrefabsProperty.name));
-		}
+		private void DrawHelpBox2() {
 
-		private void PrefabsList_drawElementCallback(Rect rect, int index, bool isActive, bool isFocused) {
-			SerializedProperty prefabProperty = PrefabsProperty.GetArrayElementAtIndex(index);
-			Rect propertyRect = rect;
-			propertyRect.y += 2;
-			propertyRect.height = EditorGUIUtility.singleLineHeight;
-			EditorGUI.PropertyField(propertyRect, prefabProperty);
-		}
+			string message = EditorInstantiationModeProperty.enumValueIndex switch {
 
-		private void DrawBootOnlyOnSpecificScenes() {
-			EditorGUIUtility.labelWidth = 160;
-			EditorGUILayout.PropertyField(BootOnlyOnSpecificScenesProperty);
-			EditorGUIUtility.labelWidth = 0;
-		}
+				(int)BootPrefabsEditorInstantiationMode.InstantiatePrefabsInAllScenes =>
+					"Additionally, in the Unity editor, these prefabs will be instantiated in all scenes, " +
+					"for testing purposes. " +
+					"\n\nThis happens before any object awakes.",
 
-		private void DrawSpecificScenes() {
-			if (BootOnlyOnSpecificScenesProperty.boolValue) {
-				SpecificScenesList.DoLayoutList();
-			}
-		}
+				(int)BootPrefabsEditorInstantiationMode.InstantiatePrefabsOnlyInSpecificScenes =>
+					"Additionally, in the Unity editor, these prefabs will be instantiated in the scenes " +
+					"specified below, for testing purposes. " +
+					"\n\nThis happens before any object awakes.",
 
-		private void SpecificScenes_drawHeaderCallback(Rect rect) {
-			EditorGUI.LabelField(rect, ObjectNames.NicifyVariableName(SpecificScenesProperty.name));
-		}
+				(int)BootPrefabsEditorInstantiationMode.InstantiatePrefabsInAllScenesExcept =>
+					"Additionally, in the Unity editor, these prefabs will be instantiated in all scenes " +
+					"except the ones specified below, for testing purposes. " +
+					"\n\nThis happens before any object awakes.",
 
-		private void SpecificScenes_drawElementCallback(Rect rect, int index, bool isActive, bool isFocused) {
-			SerializedProperty prefabProperty = SpecificScenesProperty.GetArrayElementAtIndex(index);
-			Rect propertyRect = rect;
-			propertyRect.y += 2;
-			propertyRect.height = EditorGUIUtility.singleLineHeight;
-			EditorGUI.PropertyField(propertyRect, prefabProperty);
+				_ => ""
+
+			};
+
+			EditorGUILayout.HelpBox(message, MessageType.Info);
+
 		}
 
 		#endregion
