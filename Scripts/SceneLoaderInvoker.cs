@@ -10,7 +10,7 @@ namespace CocodriloDog.App {
 	/// Utility class that allows an easy way to use the <see cref="SceneLoader"/> from a component
 	/// without additional scripting.
 	/// </summary>
-	public class SceneLoaderTrigger : MonoBehaviour {
+	public class SceneLoaderInvoker : MonoBehaviour {
 
 
 		#region Public Properties
